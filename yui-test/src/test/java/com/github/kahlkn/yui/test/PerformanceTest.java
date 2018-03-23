@@ -1,7 +1,7 @@
-package com.github.kahlkn.sagiri.test;
+package com.github.kahlkn.yui.test;
 
-import com.github.kahlkn.sagiri.test.performance.MultiPerformance;
-import com.github.kahlkn.sagiri.test.performance.Performance;
+import com.github.kahlkn.yui.test.performance.MultiPerformance;
+import com.github.kahlkn.yui.test.performance.Performance;
 import org.junit.Test;
 
 import java.util.Calendar;

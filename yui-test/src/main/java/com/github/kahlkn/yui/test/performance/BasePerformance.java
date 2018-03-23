@@ -1,11 +1,11 @@
-package com.github.kahlkn.sagiri.test.performance;
+package com.github.kahlkn.yui.test.performance;
 
 import com.github.kahlkn.artoria.exception.ExceptionUtils;
 import com.github.kahlkn.artoria.util.Assert;
 import com.github.kahlkn.artoria.util.CollectionUtils;
 import com.github.kahlkn.artoria.util.NumberUtils;
-import com.github.kahlkn.sagiri.test.TestTask;
-import com.github.kahlkn.sagiri.test.Tested;
+import com.github.kahlkn.yui.test.TestTask;
+import com.github.kahlkn.yui.test.Tested;
 
 import java.util.ArrayList;
 import java.util.List;

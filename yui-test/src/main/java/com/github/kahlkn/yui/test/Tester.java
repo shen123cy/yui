@@ -1,4 +1,4 @@
-package com.github.kahlkn.sagiri.test;
+package com.github.kahlkn.yui.test;
 
 import com.github.kahlkn.artoria.logging.Logger;
 import com.github.kahlkn.artoria.logging.LoggerFactory;

@@ -1,0 +1,3 @@
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.github.kahlkn.yui.spring.AutoConfiguration,\
+com.github.kahlkn.yui.spring.AutoConfiguration1

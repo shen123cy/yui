@@ -19,10 +19,40 @@
 
 	<dependencies>
 
+		<!-- //// selenium //// -->
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.43</version>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>2.53.1</version>
+			<!-- 3.5.3 -->
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.codeborne</groupId>
+			<artifactId>phantomjsdriver</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+
+		<!--<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-htmlunit-driver</artifactId>
+			<version>2.52.0</version>
+			<scope>provided</scope>
+		</dependency>-->
+
+		<dependency>
+			<groupId>ch.racic.selenium</groupId>
+			<artifactId>selenium-driver-helper-phantomjs</artifactId>
+			<version>2.1.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- //////////////// -->
+
+		<dependency>
+			<groupId>us.codecraft</groupId>
+			<artifactId>xsoup</artifactId>
+			<version>0.3.1</version>
 			<scope>test</scope>
 		</dependency>
 

@@ -20,11 +20,27 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.43</version>
+			<groupId>com.github.kahlkn</groupId>
+			<artifactId>yui-test</artifactId>
+			<version>0.1.1.alpha</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- //// apache poi //// -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.9</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.9</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- //////////////// -->
 
 	</dependencies>
 

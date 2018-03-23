@@ -1,6 +1,6 @@
-package com.github.kahlkn.sagiri.test.performance;
+package com.github.kahlkn.yui.test.performance;
 
-import com.github.kahlkn.sagiri.test.Tested;
+import com.github.kahlkn.yui.test.Tested;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.github.kahlkn.sagiri.test.entity;
+package com.github.kahlkn.yui.test.entity;
 
 /**
  * Test entity.

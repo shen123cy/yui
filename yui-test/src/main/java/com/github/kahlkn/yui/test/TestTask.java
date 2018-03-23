@@ -1,4 +1,4 @@
-package com.github.kahlkn.sagiri.test;
+package com.github.kahlkn.yui.test;
 
 /**
  * Test task.

@@ -1,7 +1,8 @@
 package com.github.kahlkn.yui.core.beans;
 
 import com.alibaba.fastjson.JSON;
-import com.github.kahlkn.sagiri.test.entity.Menu;
+import com.github.kahlkn.yui.core.util.DataUtils;
+import com.github.kahlkn.yui.test.entity.Menu;
 import org.junit.Before;
 import org.junit.Test;
 
