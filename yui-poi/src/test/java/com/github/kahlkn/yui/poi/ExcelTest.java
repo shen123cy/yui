@@ -1,6 +1,6 @@
 package com.github.kahlkn.yui.poi;
 
-import com.github.kahlkn.yui.test.entity.Student;
+import com.github.kahlkn.yui.test.entities.Student;
 import org.junit.Test;
 
 import java.io.File;

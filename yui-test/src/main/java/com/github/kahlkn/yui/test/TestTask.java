@@ -7,32 +7,50 @@ package com.github.kahlkn.yui.test;
 public interface TestTask {
 
     /**
-     * Execute tested code.
-     */
-    void execute();
-
-    /**
-     * Get test status.
-     * @return Test status
-     */
-    boolean getStatus();
-
-    /**
-     * Get test name.
-     * @return Test name
+     * Get test task name.
+     * @return Test task name
      */
     String getName();
 
     /**
-     * Get test description.
-     * @return Test description
+     * Set test task name.
+     * @param name Test task name
+     */
+    void setName(String name);
+
+    /**
+     * Get test task description.
+     * @return Test task description
      */
     String getDescription();
 
     /**
-     * Get test result.
-     * @return Test result
+     * Set test task description.
+     * @param description Test task description
      */
-    String getResult();
+    void setDescription(String description);
+
+    /**
+     * Get be tested code.
+     * @return Be tested code object
+     */
+    TestCode getTestCode();
+
+    /**
+     * Set be tested code.
+     * @param testCode Be tested code object
+     */
+    void setTestCode(TestCode testCode);
+
+    /**
+     * Get test result.
+     * @return Test result object
+     */
+    TestResult getResult();
+
+    /**
+     * Execute test task.
+     */
+    void execute();
 
 }

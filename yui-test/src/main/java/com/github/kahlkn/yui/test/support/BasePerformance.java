@@ -1,11 +1,12 @@
-package com.github.kahlkn.yui.test.performance;
+package com.github.kahlkn.yui.test.support;
 
 import com.github.kahlkn.artoria.exception.ExceptionUtils;
 import com.github.kahlkn.artoria.util.Assert;
 import com.github.kahlkn.artoria.util.CollectionUtils;
 import com.github.kahlkn.artoria.util.NumberUtils;
+import com.github.kahlkn.yui.test.TestCode;
+import com.github.kahlkn.yui.test.TestResult;
 import com.github.kahlkn.yui.test.TestTask;
-import com.github.kahlkn.yui.test.Tested;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,36 +18,26 @@ import static com.github.kahlkn.artoria.util.Const.ENDL;
  * Base performance.
  * @author Kahle
  */
-public abstract class BasePerformance implements TestTask {
-    protected boolean status = false;
-    protected String name;
-    protected String description;
-    protected Tested tested;
+abstract class BasePerformance implements TestTask {
+    private boolean status = false;
+    private String name;
+    private String description;
+    private TestCode testCode;
+    private TestResult result;
 
-    protected Integer groupTotal;
-    protected Integer eachGroupTotal;
-    protected Integer dataCalcTotal;
-    protected boolean showRawData = false;
-    protected List<List<Long>> rawData;
-    protected Throwable throwable;
+    private Integer groupTotal = 16;
+    private Integer eachGroupTotal = 16;
+    private Integer dataCalcTotal = 4096;
+    private boolean showRawData = false;
+    private List<List<Long>> rawData;
+    private Throwable throwable;
 
-    public BasePerformance(Integer groupTotal, Integer eachGroupTotal, Integer dataCalcTotal, Tested tested) {
-        Assert.state(groupTotal != null && groupTotal > 0
-                , "Parameter \"groupTotal\" must greater than 0. ");
-        Assert.state(eachGroupTotal != null && eachGroupTotal > 0 && eachGroupTotal < 2000
-                , "Parameter \"eachGroupTotal\" must greater than 0 and less than 1000. ");
-        Assert.state(dataCalcTotal != null && dataCalcTotal > 0
-                , "Parameter \"dataCalcTotal\" must greater than 0. ");
-        Assert.notNull(tested, "Parameter \"tested\" must not null. ");
-        this.groupTotal = groupTotal;
-        this.eachGroupTotal = eachGroupTotal;
-        this.dataCalcTotal = dataCalcTotal;
-        this.tested = tested;
-    }
-
-    @Override
     public boolean getStatus() {
         return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     @Override
@@ -54,6 +45,7 @@ public abstract class BasePerformance implements TestTask {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -63,33 +55,30 @@ public abstract class BasePerformance implements TestTask {
         return description;
     }
 
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public Integer getGroupTotal() {
-        return groupTotal;
-    }
-
-    public Integer getEachGroupTotal() {
-        return eachGroupTotal;
-    }
-
-    public Integer getDataCalcTotal() {
-        return dataCalcTotal;
-    }
-
-    public boolean getShowRawData() {
-        return showRawData;
-    }
-
-    public void setShowRawData(boolean showRawData) {
-        this.showRawData = showRawData;
+    @Override
+    public TestCode getTestCode() {
+        return testCode;
     }
 
     @Override
-    public String getResult() {
+    public void setTestCode(TestCode testCode) {
+        Assert.notNull(testCode, "Parameter \"testCode\" must not null. ");
+        this.testCode = testCode;
+    }
+
+    @Override
+    public TestResult getResult() {
         Assert.notNull(rawData, "Please invoke \"execute\" first. ");
+        if (result != null) { return result; }
+        result = new TestResult();
+        result.setStatus(status);
+        result.setName(name);
+        result.setDescription(description);
 
         StringBuilder builder = new StringBuilder();
         builder.append(">>>>>>>>").append(ENDL);
@@ -99,7 +88,8 @@ public abstract class BasePerformance implements TestTask {
             builder.append(throwable != null
                     ? ExceptionUtils.toString(throwable) : "Raw data is empty. ");
             builder.append("<<<<<<<<").append(ENDL);
-            return builder.toString();
+            result.setReport(builder.toString());
+            return result;
         }
 
         // Calc raw data.
@@ -146,10 +136,82 @@ public abstract class BasePerformance implements TestTask {
                 .append(ENDL);
         builder.append("<<<<<<<<").append(ENDL);
 
-        return builder.toString();
+        result.setReport(builder.toString());
+        return result;
     }
 
-    protected static Double average(List data) {
+    @Override
+    public void execute() {
+        rawData = new ArrayList<List<Long>>();
+        try {
+            this.execute(rawData, groupTotal, eachGroupTotal, dataCalcTotal, testCode);
+            status = true;
+        }
+        catch (Throwable t) {
+            status = false;
+            throwable = t;
+        }
+        result = null;
+    }
+
+    protected abstract void execute(List<List<Long>> rawData, Integer groupTotal
+            , Integer eachGroupTotal, final Integer dataCalcTotal, final TestCode testCode) throws Exception;
+
+    public Integer getGroupTotal() {
+        return groupTotal;
+    }
+
+    public void setGroupTotal(Integer groupTotal) {
+        Assert.state(groupTotal != null && groupTotal > 0
+                , "Parameter \"groupTotal\" must greater than 0. ");
+        this.groupTotal = groupTotal;
+    }
+
+    public Integer getEachGroupTotal() {
+        return eachGroupTotal;
+    }
+
+    public void setEachGroupTotal(Integer eachGroupTotal) {
+        Assert.state(eachGroupTotal != null && eachGroupTotal > 0 && eachGroupTotal < 2000
+                , "Parameter \"eachGroupTotal\" must greater than 0 and less than 1000. ");
+        this.eachGroupTotal = eachGroupTotal;
+    }
+
+    public Integer getDataCalcTotal() {
+        return dataCalcTotal;
+    }
+
+    public void setDataCalcTotal(Integer dataCalcTotal) {
+        Assert.state(dataCalcTotal != null && dataCalcTotal > 0
+                , "Parameter \"dataCalcTotal\" must greater than 0. ");
+        this.dataCalcTotal = dataCalcTotal;
+    }
+
+    public boolean getShowRawData() {
+        return showRawData;
+    }
+
+    public void setShowRawData(boolean showRawData) {
+        this.showRawData = showRawData;
+    }
+
+    public List<List<Long>> getRawData() {
+        return rawData;
+    }
+
+    public void setRawData(List<List<Long>> rawData) {
+        this.rawData = rawData;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
+
+    public void setThrowable(Throwable throwable) {
+        this.throwable = throwable;
+    }
+
+    private static Double average(List data) {
         Assert.notEmpty(data, "Parameter \"data\" must not empty. ");
         double sum = 0d;
         for (Object number : data) {
@@ -158,7 +220,7 @@ public abstract class BasePerformance implements TestTask {
         return NumberUtils.round(sum / data.size());
     }
 
-    protected static List<Double> averageList(List data) {
+    private static List<Double> averageList(List data) {
         Assert.notEmpty(data, "Parameter \"data\" must not empty. ");
         List<Double> result = new ArrayList<Double>();
         for (Object numbers : data) {
@@ -168,7 +230,7 @@ public abstract class BasePerformance implements TestTask {
         return result;
     }
 
-    protected static Double variance(List data, Number average) {
+    private static Double variance(List data, Number average) {
         Assert.notEmpty(data, "Parameter \"data\" must not empty. ");
         Assert.notNull(average, "Parameter \"average\" must not null. ");
         double sum = 0d;
@@ -181,12 +243,12 @@ public abstract class BasePerformance implements TestTask {
         return NumberUtils.round(sum / data.size());
     }
 
-    protected static Double stddeviation(Double variance) {
+    private static Double stddeviation(Double variance) {
         Assert.notNull(variance, "Parameter \"variance\" must not null. ");
         return NumberUtils.round(Math.sqrt(variance));
     }
 
-    protected static List<Double> varianceList(List data, List averages) {
+    private static List<Double> varianceList(List data, List averages) {
         Assert.notEmpty(data, "Parameter \"data\" must not empty. ");
         Assert.notEmpty(averages, "Parameter \"averages\" must not empty. ");
         int size = data.size();
@@ -200,7 +262,7 @@ public abstract class BasePerformance implements TestTask {
         return result;
     }
 
-    protected static List<Double> stddeviationList(List variances) {
+    private static List<Double> stddeviationList(List variances) {
         Assert.notEmpty(variances, "Parameter \"variances\" must not empty. ");
         List<Double> result = new ArrayList<Double>();
         Double num;

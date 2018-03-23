@@ -4,7 +4,7 @@ package com.github.kahlkn.yui.test;
  * Be tested code.
  * @author Kahle
  */
-public interface Tested {
+public interface TestCode {
 
     /**
      * Using tested code implement this method.

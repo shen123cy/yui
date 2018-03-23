@@ -1,4 +1,4 @@
-package com.github.kahlkn.yui.test.entity;
+package com.github.kahlkn.yui.test.entities;
 
 import java.util.List;
 

@@ -19,7 +19,7 @@ import static com.github.kahlkn.artoria.util.Const.*;
 /**
  * @author Kahle
  */
-public class ReqUtils {
+public class NetUtils {
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
