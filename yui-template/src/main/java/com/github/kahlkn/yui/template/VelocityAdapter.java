@@ -1,5 +1,6 @@
 package com.github.kahlkn.yui.template;
 
+import com.github.kahlkn.artoria.template.EngineAdapter;
 import com.github.kahlkn.artoria.util.Assert;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -15,13 +16,12 @@ import java.util.Properties;
 
 import static com.github.kahlkn.artoria.util.Const.DEFAULT_CHARSET_NAME;
 import static org.apache.velocity.app.Velocity.*;
-import static org.apache.velocity.runtime.RuntimeConstants.*;
 
 /**
  * Velocity template engine adapter.
  * @author Kahle
  */
-public class VelocityAdapter implements TemplateAdapter {
+public class VelocityAdapter implements EngineAdapter {
     private static final String FILE_LOADER_CLASS = "file.resource.loader.class";
     private static final String CLASS_LOADER_CLASS = "class.resource.loader.class";
     private static final String JAR_LOADER_CLASS = "jar.resource.loader.class";

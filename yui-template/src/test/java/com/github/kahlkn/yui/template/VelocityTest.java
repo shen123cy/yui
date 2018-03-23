@@ -1,5 +1,6 @@
 package com.github.kahlkn.yui.template;
 
+import com.github.kahlkn.artoria.template.TemplateEngine;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,6 +11,7 @@ public class VelocityTest {
     private String source = "This is test string \"${str}\", \nTest string is \"${str}\". ";
     private String source1 = "You name is \"${data.name}\", \nAnd you age is \"${data.age}\". ";
     private Map<String, Object> input = new HashMap<String, Object>();
+    private TemplateEngine engine;
 
     @Before
     public void init() {
@@ -19,15 +21,15 @@ public class VelocityTest {
         data.put("name", "zhangsan");
         data.put("age", "19");
         input.put("data", data);
-        TemplateUtils.setAdapter(new VelocityAdapter());
+        engine = new TemplateEngine(new VelocityAdapter());
     }
 
     @Test
     public void test1() throws Exception {
-        System.out.println(TemplateUtils.renderToString(input, "source", source));
-        System.out.println(TemplateUtils.renderToString(input, "source1", source1));
+        System.out.println(engine.renderToString(input, "source", source));
+        System.out.println(engine.renderToString(input, "source1", source1));
         System.out.println();
-        System.out.println(TemplateUtils.renderToString("testVelocity.vm", input));
+        System.out.println(engine.renderToString("testVelocity.vm", input));
     }
 
 }
