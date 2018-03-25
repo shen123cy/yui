@@ -14,6 +14,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.11</junit.version>
+		<velocity.version>1.7</velocity.version>
+		<freemarker.version>2.3.20</freemarker.version>
 		<spring.version>4.3.3.RELEASE</spring.version>
 		<spring-security.version>4.2.3.RELEASE</spring-security.version>
     </properties>

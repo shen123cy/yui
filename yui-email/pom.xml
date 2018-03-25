@@ -15,12 +15,12 @@
 	<dependencies>
 
 		<!-- //// java mail //// -->
-		<!--<dependency>-->
-			<!--<groupId>javax.mail</groupId>-->
-			<!--<artifactId>javax.mail-api</artifactId>-->
-			<!--<version>1.5.5</version>-->
-			<!--<scope>provided</scope>-->
-		<!--</dependency>-->
+		<!--<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.5.5</version>
+			<scope>provided</scope>
+		</dependency>-->
 
 		<dependency>
 			<groupId>com.sun.mail</groupId>
@@ -31,12 +31,12 @@
 		<!-- //////////////// -->
 
 		<!-- //// commons email //// -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
 			<version>1.4</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency>-->
 		<!-- //////////////// -->
 
 	</dependencies>

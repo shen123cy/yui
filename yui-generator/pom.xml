@@ -15,6 +15,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>com.github.kahlkn</groupId>
+			<artifactId>yui-template</artifactId>
+			<version>0.1.1.alpha</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>1.2.43</version>
