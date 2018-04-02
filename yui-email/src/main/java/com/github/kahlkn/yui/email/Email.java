@@ -1,34 +1,37 @@
 package com.github.kahlkn.yui.email;
 
+import com.github.kahlkn.artoria.exception.UncheckedException;
 import com.github.kahlkn.artoria.io.IOUtils;
+import com.github.kahlkn.artoria.logging.Logger;
+import com.github.kahlkn.artoria.logging.LoggerFactory;
 import com.github.kahlkn.artoria.time.DateTime;
-import com.github.kahlkn.artoria.util.ArrayUtils;
-import com.github.kahlkn.artoria.util.CollectionUtils;
-import com.github.kahlkn.artoria.util.MapUtils;
-import com.github.kahlkn.artoria.util.StringUtils;
+import com.github.kahlkn.artoria.util.*;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.*;
 
-import static com.github.kahlkn.artoria.util.Const.ENDL;
+import static com.github.kahlkn.artoria.util.Const.*;
+import static javax.mail.Flags.Flag.SEEN;
+import static javax.mail.Message.RecipientType.*;
 
 /**
+ * Email object.
  * @author Kahle
  */
 public class Email {
-    private String charset = Charset.defaultCharset().name();
+    private static final String APPLICATION_ALL = "application/*";
+    private static final String MESSAGE_RFC822 = "message/rfc822";
+    private static final String MULTIPART_ALL = "multipart/*";
+    private static final String X_PRIORITY = "X-Priority";
+    private static final String STRING_NAME = "name";
+    private static final String TEXT_ALL = "text/*";
+    private static Logger log = LoggerFactory.getLogger(Email.class);
 
-    private Props props;
-    private Session session;
-    private Boolean debug;
-    private String user;
-    private String password;
-
+    private String charset = DEFAULT_CHARSET_NAME;
     private List<Address> from = new ArrayList<Address>();
     private List<Address> to = new ArrayList<Address>();
     private List<Address> cc = new ArrayList<Address>();
@@ -38,32 +41,15 @@ public class Email {
     private String textContent;
     private String htmlContent;
     private Map<String, File> files = new HashMap<String, File>();
+    private Boolean debug;
 
-    private Message message;
-    private String messageID;
+    private String messageId;
     private String priority;
     private Integer size;
     private Boolean isRead;
+    private Message message;
     private boolean isTextEmail = false;
-    private boolean isHaveAttach = false;
-
-    public static Email create() {
-        return new Email();
-    }
-
-    public static Email create(Session session) {
-        Email email = new Email();
-        email.session = session;
-        return email;
-    }
-
-    public static Email create(Props props) {
-        Email email = new Email();
-        email.props = props;
-        return email;
-    }
-
-    private Email() {}
+    private boolean hasAttach = false;
 
     public String getCharset() {
         return charset;
@@ -74,191 +60,128 @@ public class Email {
         return this;
     }
 
-    public Props getProps() {
-        return props;
-    }
-
-    public Email setProps(Props props) {
-        this.props = props;
-        return this;
-    }
-
-    public Session getSession() {
-        return session;
-    }
-
-    public Email setSession(Session session) {
-        this.session = session;
-        return this;
-    }
-
-    public Boolean isDebug() {
-        return debug;
-    }
-
-    public Email setDebug(Boolean debug) {
-        this.debug = debug;
-        return this;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public Email setUser(String user) {
-        this.user = user;
-        return this;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Email setPassword(String password) {
-        this.password = password;
-        return this;
-    }
-
     public List<Address> getFrom() {
         return from;
     }
 
-    public Email setFrom(Address... from) {
-        this.from.clear();
-        this.from.addAll(Arrays.asList(from));
+    public Email addFrom(List<Address> from) {
+        this.from.addAll(from);
         return this;
     }
 
-    public Email addFrom(Address... from) {
-        this.from.addAll(Arrays.asList(from));
-        return this;
-    }
-
-    public Email setFrom(String from) {
+    public Email addFrom(String... from) {
         try {
-            return setFrom(InternetAddress.parse(from));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            for (String s : from) {
+                Address[] parse = InternetAddress.parse(s);
+                this.from.addAll(Arrays.asList(parse));
+            }
+            return this;
         }
-    }
-
-    public Email addFrom(String from) {
-        try {
-            return addFrom(InternetAddress.parse(from));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Email setFrom(String from, String displayName) {
-        try {
-            String encodeName = MimeUtility.encodeText(displayName);
-            return setFrom(new InternetAddress(encodeName + " <" + from + ">"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        catch (Exception e) {
+            throw new UncheckedException(e);
         }
     }
 
     public Email addFrom(String from, String displayName) {
         try {
-            String encodeName = MimeUtility.encodeText(displayName);
-            return addFrom(new InternetAddress(encodeName + " <" + from + ">"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            if (StringUtils.isNotBlank(displayName)) {
+                String encodeName = MimeUtility.encodeText(displayName);
+                this.from.add(new InternetAddress(encodeName + " <" + from + ">"));
+            }
+            else {
+                Address[] parse = InternetAddress.parse(from);
+                this.from.addAll(Arrays.asList(parse));
+            }
+            return this;
         }
+        catch (Exception e) {
+            throw new UncheckedException(e);
+        }
+    }
+
+    public Email clearFrom() {
+        this.from.clear();
+        return this;
     }
 
     public List<Address> getTo() {
         return to;
     }
 
-    public Email setTo(Address... to) {
+    public Email addTo(List<Address> to) {
+        this.to.addAll(to);
+        return this;
+    }
+
+    public Email addTo(String... to) {
+        try {
+            for (String s : to) {
+                Address[] parse = InternetAddress.parse(s);
+                this.to.addAll(Arrays.asList(parse));
+            }
+            return this;
+        } catch (AddressException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Email clearTo() {
         this.to.clear();
-        this.to.addAll(Arrays.asList(to));
         return this;
-    }
-
-    public Email addTo(Address... to) {
-        this.to.addAll(Arrays.asList(to));
-        return this;
-    }
-
-    public Email setTo(String to) {
-        try {
-            return setTo(InternetAddress.parse(to));
-        } catch (AddressException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Email addTo(String to) {
-        try {
-            return addTo(InternetAddress.parse(to));
-        } catch (AddressException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public List<Address> getCc() {
         return cc;
     }
 
-    public Email setCc(Address... cc) {
+    public Email addCc(List<Address> cc) {
+        this.cc.addAll(cc);
+        return this;
+    }
+
+    public Email addCc(String... cc) {
+        try {
+            for (String s : cc) {
+                Address[] parse = InternetAddress.parse(s);
+                this.cc.addAll(Arrays.asList(parse));
+            }
+            return this;
+        }
+        catch (Exception e) {
+            throw new UncheckedException(e);
+        }
+    }
+
+    public Email clearCc() {
         this.cc.clear();
-        this.cc.addAll(Arrays.asList(cc));
         return this;
-    }
-
-    public Email addCc(Address... cc) {
-        this.cc.addAll(Arrays.asList(cc));
-        return this;
-    }
-
-    public Email setCc(String cc) {
-        try {
-            return setCc(InternetAddress.parse(cc));
-        } catch (AddressException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Email addCc(String cc) {
-        try {
-            return addCc(InternetAddress.parse(cc));
-        } catch (AddressException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public List<Address> getBcc() {
         return bcc;
     }
 
-    public Email setBcc(Address... bcc) {
+    public Email addBcc(List<Address> bcc) {
+        this.bcc.addAll(bcc);
+        return this;
+    }
+
+    public Email addBcc(String... bcc) {
+        try {
+            for (String s : bcc) {
+                Address[] parse = InternetAddress.parse(s);
+                this.bcc.addAll(Arrays.asList(parse));
+            }
+            return this;
+        }
+        catch (Exception e) {
+            throw new UncheckedException(e);
+        }
+    }
+
+    public Email clearBcc() {
         this.bcc.clear();
-        this.bcc.addAll(Arrays.asList(bcc));
         return this;
-    }
-
-    public Email addBcc(Address... bcc) {
-        this.bcc.addAll(Arrays.asList(bcc));
-        return this;
-    }
-
-    public Email setBcc(String bcc) {
-        try {
-            return setBcc(InternetAddress.parse(bcc));
-        } catch (AddressException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Email addBcc(String bcc) {
-        try {
-            return addBcc(InternetAddress.parse(bcc));
-        } catch (AddressException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Date getSentDate() {
@@ -301,14 +224,6 @@ public class Email {
         return files;
     }
 
-    public Email setFiles(List<File> files) {
-        this.files.clear();
-        for (File file : files) {
-            this.files.put(file.getName(), file);
-        }
-        return this;
-    }
-
     public Email addFiles(List<File> files) {
         for (File file : files) {
             this.files.put(file.getName(), file);
@@ -316,18 +231,8 @@ public class Email {
         return this;
     }
 
-    public Email setFiles(File... files) {
-        this.files.clear();
-        for (File file : files) {
-            this.files.put(file.getName(), file);
-        }
-        return this;
-    }
-
     public Email addFiles(File... files) {
-        for (File file : files) {
-            this.files.put(file.getName(), file);
-        }
+        this.addFiles(Arrays.asList(files));
         return this;
     }
 
@@ -337,82 +242,111 @@ public class Email {
         return this;
     }
 
-    public Message getMessage() {
-        return message;
+    public Boolean getDebug() {
+        return debug;
     }
 
-    public String getMessageID() {
-        return messageID;
+    public Email setDebug(Boolean debug) {
+        this.debug = debug;
+        return this;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public Email setMessageId(String messageId) {
+        this.messageId = messageId;
+        return this;
     }
 
     public String getPriority() {
         return priority;
     }
 
+    public Email setPriority(String priority) {
+        this.priority = priority;
+        return this;
+    }
+
     public Integer getSize() {
         return size;
     }
 
-    public Boolean isRead() {
+    public Email setSize(Integer size) {
+        this.size = size;
+        return this;
+    }
+
+    public Boolean getIsRead() {
         return isRead;
     }
 
-    public boolean isTextEmail() {
+    public Email setIsRead(Boolean isRead) {
+        this.isRead = isRead;
+        return this;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public Email setMessage(Message message) {
+        this.message = message;
+        return this;
+    }
+
+    public boolean getIsTextEmail() {
         return isTextEmail;
     }
 
-    public boolean isHaveAttach() {
-        return isHaveAttach;
+    public Email setIsTextEmail(boolean isTextEmail) {
+        this.isTextEmail = isTextEmail;
+        return this;
     }
 
-    public Email saveAttach(File dir)
-            throws IOException, MessagingException {
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new IOException("Mkdirs failure. ");
+    public boolean getHasAttach() {
+        return hasAttach;
+    }
+
+    public Email setHasAttach(boolean hasAttach) {
+        this.hasAttach = hasAttach;
+        return this;
+    }
+
+    public Email saveAttach(File path) throws IOException, MessagingException {
+        if (!path.exists() && !path.mkdirs()) {
+            throw new IOException("Create directory \"" + path + "\" failure. ");
         }
-        if (isHaveAttach && MapUtils.isEmpty(this.files)) {
-            List<File> files = saveAttachment(message, dir);
-            if (CollectionUtils.isNotEmpty(files)) {
-                this.addFiles(files);
-            }
+        if (hasAttach && MapUtils.isEmpty(this.files)) {
+            List<File> files = Email.saveAttach(message, path);
+            if (CollectionUtils.isEmpty(files)) { return this; }
+            this.addFiles(files);
         }
         return this;
     }
 
-    public MimeMessage build()
-            throws MessagingException, IOException {
-        if (session == null) {
-            if (props != null) {
-                session = Session.getDefaultInstance(props.build());
-            } else {
-                throw new NullPointerException("Session and Email Props both are null. ");
-            }
-        }
+    public MimeMessage build(Session session) throws IOException, MessagingException {
+        Assert.notNull(session, "Parameter \"session\" must not blank. ");
         if (debug != null) {
             session.setDebug(debug);
         }
         MimeMessage message = new MimeMessage(session);
-        if (CollectionUtils.isNotEmpty(from)) {
-            Address[] tmp = new Address[from.size()];
-            from.toArray(tmp);
-            message.addFrom(tmp);
-        } else {
-            throw new NullPointerException("From is null. ");
-        }
-        if (CollectionUtils.isNotEmpty(to)) {
-            Address[] tmp = new Address[to.size()];
-            to.toArray(tmp);
-            message.addRecipients(Message.RecipientType.TO, tmp);
-        } else {
-            throw new NullPointerException("To is null. ");
-        }
+        Assert.notEmpty(from, "Parameter \"from\" must not blank. ");
+        Address[] tmp = new Address[from.size()];
+        from.toArray(tmp);
+        message.addFrom(tmp);
+        Assert.notEmpty(to, "Parameter \"to\" must not blank. ");
+        tmp = new Address[to.size()];
+        to.toArray(tmp);
+        message.addRecipients(Message.RecipientType.TO, tmp);
         if (CollectionUtils.isNotEmpty(cc)) {
-            Address[] tmp = new Address[cc.size()];
+            tmp = new Address[cc.size()];
             cc.toArray(tmp);
             message.addRecipients(Message.RecipientType.CC, tmp);
         }
         if (CollectionUtils.isNotEmpty(bcc)) {
-            Address[] tmp = new Address[bcc.size()];
+            tmp = new Address[bcc.size()];
             bcc.toArray(tmp);
             message.addRecipients(Message.RecipientType.BCC, tmp);
         }
@@ -439,88 +373,138 @@ public class Email {
                 }
             }
             message.setContent(mimeMultipart);
-        } else if (StringUtils.isNotBlank(textContent)) {
+        }
+        else if (StringUtils.isNotBlank(textContent)) {
             message.setText(textContent, charset);
         }
         return message;
     }
 
-    public Email send()
-            throws MessagingException, IOException {
-        MimeMessage message = this.build();
-        if (StringUtils.isNotBlank(user) && StringUtils.isNotBlank(password)) {
-            Transport.send(message, user, password);
-        } else {
-            String user = null, password = null;
-            if (props != null) {
-                user = props.getUser();
-                password = props.getPassword();
-            }
-            if (StringUtils.isNotBlank(user) && StringUtils.isNotBlank(password)) {
-                Transport.send(message, user, password);
-            } else {
-                Transport.send(message);
-            }
-        }
-        messageID = message.getMessageID();
-        return this;
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("MessageID   : ").append(messageID).append(ENDL);
-        String fromStr = from.size() > 2 ? EmailUtils.toString(from.subList(0, 2)) + " ..." : EmailUtils.toString(from);
+        builder.append("MessageId   : ").append(messageId).append(ENDL);
+        String fromStr = from.size() > 2 ? Email.serializeAddress(from.subList(0, 2)) + " ..." : Email.serializeAddress(from);
         builder.append("From        : ").append(fromStr).append(ENDL);
-        String toStr = to.size() > 2 ? EmailUtils.toString(to.subList(0, 2)) + " ..." : EmailUtils.toString(to);
+        String toStr = to.size() > 2 ? Email.serializeAddress(to.subList(0, 2)) + " ..." : Email.serializeAddress(to);
         builder.append("To          : ").append(toStr).append(ENDL);
         if (CollectionUtils.isNotEmpty(cc)) {
-            String ccStr = cc.size() > 2 ? EmailUtils.toString(cc.subList(0, 2)) + " ..." : EmailUtils.toString(cc);
+            String ccStr = cc.size() > 2 ? Email.serializeAddress(cc.subList(0, 2)) + " ..." : Email.serializeAddress(cc);
             builder.append("Cc          : ").append(ccStr).append(ENDL);
         }
         if (CollectionUtils.isNotEmpty(bcc)) {
-            String bccStr = bcc.size() > 2 ? EmailUtils.toString(bcc.subList(0, 2)) + " ..." : EmailUtils.toString(bcc);
+            String bccStr = bcc.size() > 2 ? Email.serializeAddress(bcc.subList(0, 2)) + " ..." : Email.serializeAddress(bcc);
             builder.append("Bcc         : ").append(bccStr).append(ENDL);
         }
         builder.append("SentDate    : ").append(DateTime.create(sentDate).toString()).append(ENDL);
         builder.append("Priority    : ").append(priority).append(ENDL);
         builder.append("Size        : ").append(size).append(" Byte").append(ENDL);
-        builder.append("HasAttach   : ").append(isHaveAttach).append(ENDL);
+        builder.append("HasAttach   : ").append(hasAttach).append(ENDL);
         builder.append("IsRead      : ").append(isRead).append(ENDL);
         builder.append("IsTextEmail : ").append(isTextEmail).append(ENDL);
-        String subjt = subject.trim();
-        subjt = subjt.length() > 36 ? subjt.substring(0, 36) : subjt;
-        builder.append("Subject     : ").append(subjt).append(ENDL);
+        String subject = this.subject.trim();
+        subject = subject.length() > 36 ? subject.substring(0, 36) : subject;
+        builder.append("Subject     : ").append(subject).append(ENDL);
         String content = isTextEmail ? textContent : htmlContent;
-        content = content.trim().replaceAll("\\s", " ");
-        content = content.length() > 36 ? content.substring(0, 36) : content;
+        content = content.trim();
+        content = content.length() > 200 ? content.substring(0, 200) : content;
         builder.append("Summary     : ").append(content).append(ENDL);
         return builder.toString();
     }
 
-    private static String getContent(Part part)
-            throws MessagingException, IOException {
+    public static Email parse(Message message) throws IOException, MessagingException {
+        Email email = new Email();
+        email.setMessage(message);
+        if (message instanceof MimeMessage) {
+            email.setMessageId(((MimeMessage) message).getMessageID());
+        }
+        String[] xPrioHeaders = message.getHeader(X_PRIORITY);
+        email.setPriority(ArrayUtils.isNotEmpty(xPrioHeaders) ? xPrioHeaders[0] : null);
+        email.setSize(message.getSize());
+        Flags flags = message.getFlags();
+        email.setIsRead(flags.contains(SEEN));
+        email.setSentDate(message.getSentDate());
+        Address[] from = message.getFrom();
+        email.addFrom(Arrays.asList(from));
+        Address[] recipients = message.getRecipients(TO);
+        email.addTo(Arrays.asList(recipients));
+        Address[] tmp = message.getRecipients(CC);
+        if (tmp != null) {
+            email.addCc(Arrays.asList(tmp));
+        }
+        tmp = message.getRecipients(BCC);
+        if (tmp != null) {
+            email.addBcc(Arrays.asList(tmp));
+        }
+        String subject = message.getSubject();
+        subject = MimeUtility.decodeText(subject);
+        email.setSubject(subject);
+        String contentType = message.getContentType();
+        boolean contains = contentType.contains(STRING_NAME);
+        if (message.isMimeType(TEXT_ALL) && !contains) {
+            email.setIsTextEmail(true);
+            email.setTextContent(message.getContent().toString());
+        }
+        else {
+            email.setIsTextEmail(false);
+            email.setHtmlContent(Email.takeContent(message));
+        }
+        email.setHasAttach(Email.containAttach(message));
+        return email;
+    }
+
+    private static String serializeAddress(Address address) {
+        try {
+            if (address instanceof InternetAddress) {
+                InternetAddress addr = (InternetAddress) address;
+                String nickname = addr.getPersonal();
+                nickname = StringUtils.isNotBlank(nickname)
+                        ? MimeUtility.decodeText(nickname) : EMPTY_STRING;
+                return nickname + "<" + addr.getAddress() + ">";
+            }
+            else {
+                return address.toString();
+            }
+        }
+        catch (Exception e) {
+            throw new UncheckedException(e);
+        }
+    }
+
+    private static String serializeAddress(List<Address> addresses) {
         StringBuilder builder = new StringBuilder();
-        boolean containAttach = part.getContentType().contains("name");
-        if (part.isMimeType("text/*") && !containAttach) {
+        for (Address address : addresses) {
+            String addressStr = Email.serializeAddress(address);
+            builder.append(addressStr).append(", ");
+        }
+        builder.deleteCharAt(builder.length() - 2);
+        return builder.toString();
+    }
+
+    private static String takeContent(Part part) throws IOException, MessagingException {
+        StringBuilder builder = new StringBuilder();
+        boolean containAttach = part.getContentType().contains(STRING_NAME);
+        if (part.isMimeType(TEXT_ALL) && !containAttach) {
             builder.append(part.getContent().toString());
-        } else if (part.isMimeType("message/rfc822")) {
-            builder.append(getContent((Part) part.getContent()));
-        } else if (part.isMimeType("multipart/*")) {
+        }
+        else if (part.isMimeType(MESSAGE_RFC822)) {
+            builder.append(Email.takeContent((Part) part.getContent()));
+        }
+        else if (part.isMimeType(MULTIPART_ALL)) {
             Multipart multipart = (Multipart) part.getContent();
             int partCount = multipart.getCount();
             for (int i = 0; i < partCount; i++) {
                 BodyPart bodyPart = multipart.getBodyPart(i);
-                builder.append(getContent(bodyPart));
+                builder.append(Email.takeContent(bodyPart));
             }
         }
         return builder.toString();
     }
 
-    private static boolean containAttachment(Part part)
-            throws MessagingException, IOException {
+    private static boolean containAttach(Part part) throws IOException, MessagingException {
         boolean hasAttach = false;
-        if (part.isMimeType("multipart/*")) {
+        if (part.isMimeType(MULTIPART_ALL)) {
+            // Handle multipart
             MimeMultipart multipart = (MimeMultipart) part.getContent();
             int partCount = multipart.getCount();
             for (int i = 0; i < partCount; i++) {
@@ -529,32 +513,27 @@ public class Email {
                 boolean isAttach = disp != null, isInline = isAttach;
                 isAttach = isAttach && disp.equalsIgnoreCase(Part.ATTACHMENT);
                 isInline = isInline && disp.equalsIgnoreCase(Part.INLINE);
-                if (isAttach || isInline) {
+                if (isAttach || isInline ||
+                        bPart.isMimeType(APPLICATION_ALL) ||
+                        bPart.getContentType().contains(STRING_NAME)) {
                     hasAttach = true;
-                } else if (bPart.isMimeType("multipart/*")) {
-                    hasAttach = containAttachment(bPart);
-                } else {
-                    if (bPart.isMimeType("application/*")) {
-                        hasAttach = true;
-                    }
-                    if (bPart.getContentType().contains("name")) {
-                        hasAttach = true;
-                    }
                 }
-                if (hasAttach) {
-                    break;
+                else if (bPart.isMimeType(MULTIPART_ALL)) {
+                    hasAttach = Email.containAttach(bPart);
                 }
+                if (hasAttach) { break; }
             }
-        } else if (part.isMimeType("message/rfc822")) {
-            hasAttach = containAttachment((Part) part.getContent());
+        }
+        else if (part.isMimeType(MESSAGE_RFC822)) {
+            hasAttach = Email.containAttach((Part) part.getContent());
         }
         return hasAttach;
     }
 
-    private static List<File> saveAttachment(Part part, File dir)
-            throws MessagingException, IOException {
+    private static List<File> saveAttach(Part part, File dir) throws IOException, MessagingException {
         List<File> files = new ArrayList<File>();
-        if (part.isMimeType("multipart/*")) {
+        if (part.isMimeType(MULTIPART_ALL)) {
+            // Handle multipart
             Multipart multipart = (Multipart) part.getContent();
             int partCount = multipart.getCount();
             for (int i = 0; i < partCount; i++) {
@@ -564,8 +543,8 @@ public class Email {
                 boolean hasName = isAttach, isApplication = isAttach;
                 isAttach = isAttach && disp.equalsIgnoreCase(Part.ATTACHMENT);
                 isInline = isInline && disp.equalsIgnoreCase(Part.INLINE);
-                hasName = hasName && bPart.getContentType().contains("name");
-                isApplication = isApplication && bPart.isMimeType("application/*");
+                hasName = hasName && bPart.getContentType().contains(STRING_NAME);
+                isApplication = isApplication && bPart.isMimeType(APPLICATION_ALL);
                 if (isAttach || isInline || hasName || isApplication) {
                     InputStream in = null;
                     OutputStream out = null;
@@ -574,61 +553,31 @@ public class Email {
                         String fName = bPart.getFileName();
                         fName = MimeUtility.decodeText(fName);
                         File dest = new File(dir, fName);
+                        // Prevent dest file already exist.
+                        String destStr = PathUtils.notRepeatPath(dest.toString());
+                        dest = new File(destStr);
                         if (!dest.createNewFile()) {
-                            String msg = "Create file failure. File : ";
-                            msg += dest.toString();
-                            throw new IOException(msg);
+                            throw new IOException("Create file \"" + dest + "\" failure. ");
                         }
                         files.add(dest);
                         out = new FileOutputStream(dest);
                         IOUtils.copyLarge(in, out);
                         out.flush();
-                    } finally {
+                    }
+                    finally {
                         IOUtils.closeQuietly(in);
                         IOUtils.closeQuietly(out);
                     }
-                } else if (bPart.isMimeType("multipart/*")) {
-                    files.addAll(saveAttachment(bPart, dir));
+                }
+                else if (bPart.isMimeType(MULTIPART_ALL)) {
+                    files.addAll(Email.saveAttach(bPart, dir));
                 }
             }
-        } else if (part.isMimeType("message/rfc822")) {
-            files.addAll(saveAttachment((Part) part.getContent(), dir));
+        }
+        else if (part.isMimeType(MESSAGE_RFC822)) {
+            files.addAll(Email.saveAttach((Part) part.getContent(), dir));
         }
         return files;
-    }
-
-    public static Email parse(Message message)
-            throws MessagingException, IOException {
-        Email email = new Email();
-        email.message = message;
-        if (message instanceof MimeMessage) {
-            email.messageID = ((MimeMessage) message).getMessageID();
-        }
-        String[] xPrioHeaders = message.getHeader("X-Priority");
-        email.priority = ArrayUtils.isNotEmpty(xPrioHeaders) ? xPrioHeaders[0] : null;
-        email.size = message.getSize();
-        email.isRead = message.getFlags().contains(Flags.Flag.SEEN);
-        email.sentDate = message.getSentDate();
-        email.from.addAll(Arrays.asList(message.getFrom()));
-        email.to.addAll(Arrays.asList(message.getRecipients(Message.RecipientType.TO)));
-        Address[] tmp = message.getRecipients(Message.RecipientType.CC);
-        if (tmp != null) {
-            email.cc.addAll(Arrays.asList(tmp));
-        }
-        tmp = message.getRecipients(Message.RecipientType.BCC);
-        if (tmp != null) {
-            email.bcc.addAll(Arrays.asList(tmp));
-        }
-        email.subject = MimeUtility.decodeText(message.getSubject());
-        if (message.isMimeType("text/*") && !message.getContentType().contains("name")) {
-            email.isTextEmail = true;
-            email.textContent = message.getContent().toString();
-        } else {
-            email.isTextEmail = false;
-            email.htmlContent = getContent(message);
-        }
-        email.isHaveAttach = containAttachment(message);
-        return email;
     }
 
 }
