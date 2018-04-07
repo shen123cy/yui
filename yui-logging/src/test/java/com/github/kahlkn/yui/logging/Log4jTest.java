@@ -1,4 +1,4 @@
-package com.github.kahlkn.yui.core.logging;
+package com.github.kahlkn.yui.logging;
 
 import com.github.kahlkn.artoria.logging.Logger;
 import com.github.kahlkn.artoria.logging.LoggerFactory;
@@ -16,6 +16,8 @@ public class Log4jTest {
     public void test1() {
         Logger log = LoggerFactory.getLogger(Log4jTest.class);
         log.info("Hello, World! ");
+        log.info("Hello, World! ");
+        log.error("Hello, World! ");
         log.error("Hello, World! ");
     }
 

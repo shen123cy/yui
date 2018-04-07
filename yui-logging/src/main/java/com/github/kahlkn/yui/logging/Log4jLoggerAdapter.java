@@ -1,4 +1,4 @@
-package com.github.kahlkn.yui.core.logging;
+package com.github.kahlkn.yui.logging;
 
 import com.github.kahlkn.artoria.logging.Level;
 import com.github.kahlkn.artoria.logging.Logger;
