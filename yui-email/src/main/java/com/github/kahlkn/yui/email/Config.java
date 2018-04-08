@@ -14,6 +14,8 @@ public class Config {
     private String storeProtocol;
     private Boolean debug;
     private Boolean sslOnConnect;
+    private String user;
+    private String password;
 
     public String getSmtpHost() {
         return smtpHost;
@@ -93,6 +95,24 @@ public class Config {
 
     public Config setSslOnConnect(Boolean sslOnConnect) {
         this.sslOnConnect = sslOnConnect;
+        return this;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public Config setUser(String user) {
+        this.user = user;
+        return this;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Config setPassword(String password) {
+        this.password = password;
         return this;
     }
 

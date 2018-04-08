@@ -1,15 +1,10 @@
 package com.github.kahlkn.yui.core.servlet;
 
-import com.github.kahlkn.artoria.io.IOUtils;
 import com.github.kahlkn.artoria.time.DateUtils;
-import com.github.kahlkn.artoria.util.Assert;
 import com.github.kahlkn.artoria.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Set;
@@ -17,34 +12,12 @@ import java.util.Set;
 import static com.github.kahlkn.artoria.util.Const.*;
 
 /**
+ * Request tools.
  * @author Kahle
  */
-public class NetUtils {
-    private static final String CONTENT_TYPE = "Content-Type";
-    private static final String APPLICATION_JSON = "application/json";
-    private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+public class RequestUtils {
 
-    public static void responseJson(HttpServletResponse response, String jsonString) throws IOException {
-        responseJson(response, jsonString, DEFAULT_CHARSET_NAME);
-    }
-
-    public static void responseJson(HttpServletResponse response, String jsonString, String charset) throws IOException {
-        Assert.notNull(response, "Parameter \"response\" must not null. ");
-        Assert.notEmpty(jsonString, "Parameter \"jsonString\" must not empty. ");
-        charset = StringUtils.isNotBlank(charset) ? charset : DEFAULT_CHARSET_NAME;
-        response.setHeader(CONTENT_TYPE, APPLICATION_JSON + ";charset=" + charset);
-        PrintWriter writer = null;
-        try {
-            writer = response.getWriter();
-            writer.write(jsonString);
-            writer.flush();
-        }
-        finally {
-            IOUtils.closeQuietly(writer);
-        }
-    }
-
-    public static boolean isMultipartRequest(HttpServletRequest request) {
+    public static boolean isMultipart(HttpServletRequest request) {
         String contentType = request.getContentType();
         return contentType != null && contentType.toLowerCase().contains("multipart");
     }
@@ -64,7 +37,7 @@ public class NetUtils {
         Map<String, String[]> parameterMap = request.getParameterMap();
         if (parameterMap.entrySet().size() != 0) {
             builder.append(STRING_PARAMETER).append(LEFT_SQUARE_BRACKET)
-                    .append(paramsSummary(parameterMap)).append(RIGHT_SQUARE_BRACKET)
+                    .append(parametersSummary(parameterMap)).append(RIGHT_SQUARE_BRACKET)
                     .append(BLANK_SPACE);
         }
 
@@ -118,7 +91,7 @@ public class NetUtils {
         Map<String, String[]> parameterMap = request.getParameterMap();
         if (parameterMap.entrySet().size() != 0) {
             builder.append(STRING_PARAMETER_LOWER_CASE).append(COLON).append(BLANK_SPACE);
-            builder.append(paramsSummary(parameterMap)).append(ENDL);
+            builder.append(parametersSummary(parameterMap)).append(ENDL);
         }
 
         String characterEncoding = request.getCharacterEncoding();
@@ -140,12 +113,12 @@ public class NetUtils {
         return builder;
     }
 
-    private static StringBuilder paramsSummary(Map<String, String[]> parameterMap) {
+    private static StringBuilder parametersSummary(Map<String, String[]> params) {
         StringBuilder builder = new StringBuilder();
-        if (parameterMap == null) {
+        if (params == null) {
             return builder;
         }
-        Set<Map.Entry<String, String[]>> entries = parameterMap.entrySet();
+        Set<Map.Entry<String, String[]>> entries = params.entrySet();
         for (Map.Entry<String, String[]> entry : entries) {
             String[] values = entry.getValue();
             if (values.length == 1) {

@@ -60,6 +60,8 @@ public class EmailClient {
     public EmailClient setConfig(Properties config) {
         Assert.notNull(config, "Parameter \"parameter\" must not null. ");
         this.config = config;
+        this.user = config.getProperty("mail.user");
+        this.password = config.getProperty("mail.password");
         return this;
     }
 
@@ -109,6 +111,8 @@ public class EmailClient {
             }
         }
         this.config = properties;
+        this.user = config.getUser();
+        this.password = config.getPassword();
         return this;
     }
 

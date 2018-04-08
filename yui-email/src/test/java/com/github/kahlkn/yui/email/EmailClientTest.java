@@ -18,7 +18,6 @@ import static com.github.kahlkn.artoria.util.Const.ENDL;
 @Ignore
 public class EmailClientTest {
     private static Logger log = LoggerFactory.getLogger(EmailClientTest.class);
-    private static Boolean debug = false;
     private static EmailClient client;
     private static Email email;
     private static String to = "to@email.com";
@@ -31,13 +30,14 @@ public class EmailClientTest {
                 .setImapPort(993)
                 .setStoreProtocol("imap")
                 .setSslOnConnect(true)
-                .setDebug(debug);
+                .setDebug(false);
         // Can use default email config file
         client = new EmailClient()
         // client = new EmailClient("E:\\Project4j\\mine\\yui\\yui-email\\target\\test-classes\\email.properties")
                 // .setConfig(config)
-                .setUser("user@email.com")
-                .setPassword("password");
+                // .setUser("user@email.com")
+                // .setPassword("password")
+        ;
         email = new Email()
                 .addFrom(client.getUser(), "Email Test User")
                 .addTo(to)
@@ -45,7 +45,8 @@ public class EmailClientTest {
                 .setSubject("Email Test")
                 .setHtmlContent("<html><h1>Email Test</h1><br />This is a test email.<br /><img src=\"" +
                         "https://kahlkn.github.io/Luck.jpg\" /><br /><br /></html>")
-                .addFiles(new File("E:\\test.csv"));
+                // .addFiles(new File("E:\\test.csv"))
+        ;
     }
 
     @Test
