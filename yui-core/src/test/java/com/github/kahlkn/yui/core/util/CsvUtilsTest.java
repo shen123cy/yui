@@ -1,11 +1,13 @@
 package com.github.kahlkn.yui.core.util;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+@Ignore
 public class CsvUtilsTest {
 
     @Test
@@ -30,7 +32,6 @@ public class CsvUtilsTest {
         for (Map<String, Object> map : mapList) {
             System.out.println(map);
         }
-
         CsvUtils.writeToFileByMap(mapList, new File("E:\\456.csv"), "GBK");
     }
 

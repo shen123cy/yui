@@ -554,7 +554,7 @@ public class Email {
                         fName = MimeUtility.decodeText(fName);
                         File dest = new File(dir, fName);
                         // Prevent dest file already exist.
-                        String destStr = PathUtils.notRepeatPath(dest.toString());
+                        String destStr = PathUtils.notExistPath(dest.toString());
                         dest = new File(destStr);
                         if (!dest.createNewFile()) {
                             throw new IOException("Create file \"" + dest + "\" failure. ");

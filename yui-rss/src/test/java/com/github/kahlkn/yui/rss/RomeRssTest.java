@@ -13,6 +13,7 @@ public class RomeRssTest {
         rss.addItem("Post3", "http://uux.me/3", new Date(), "Post3's XXXX ddddd ssss");
         rss.addItem("Post4", "http://uux.me/4", new Date(), "Post4's XXXX ddddd ssss");
         rss.addItem("Post5", "http://uux.me/5", new Date(), "Post5's XXXX ddddd ssss");
+        rss.setImage("image", "http://image.com");
         return rss;
     }
 

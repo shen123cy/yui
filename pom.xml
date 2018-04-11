@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.kahlkn</groupId>
+    <groupId>com.github.kahlkn.yui</groupId>
     <artifactId>yui</artifactId>
 	<version>0.1.1.alpha</version>
     <packaging>pom</packaging>
@@ -13,34 +13,83 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <yui.version>0.1.1.alpha</yui.version>
         <junit.version>4.11</junit.version>
 		<velocity.version>1.7</velocity.version>
 		<freemarker.version>2.3.20</freemarker.version>
 		<spring.version>4.3.3.RELEASE</spring.version>
 		<spring-security.version>4.2.3.RELEASE</spring-security.version>
-    </properties>
+		<!--<curator.version>3.2.1</curator.version>-->
+		<curator.version>2.11.1</curator.version>
+		<fastjson.version>1.2.43</fastjson.version>
+		<poi.version>3.9</poi.version>
+		<poi-ooxml.version>3.9</poi-ooxml.version>
+		<logback.version>1.2.2</logback.version>
+		<commons-logging.version>1.2</commons-logging.version>
+		<log4j.version>1.2.17</log4j.version>
+		<mail.version>1.6.1</mail.version>
+		<commons-email.version>1.4</commons-email.version>
+	</properties>
 
     <modules>
-        <module>yui-core</module>
+        <!--<module>yui-core</module>-->
         <module>yui-email</module>
-        <module>yui-generator</module>
+        <!--<module>yui-generator</module>-->
 		<module>yui-logging</module>
         <module>yui-poi</module>
-        <module>yui-redis</module>
-        <module>yui-rss</module>
-        <module>yui-selenium</module>
-        <module>yui-spring</module>
+        <!--<module>yui-redis</module>-->
+        <!--<module>yui-rss</module>-->
+        <!--<module>yui-selenium</module>-->
+        <!--<module>yui-spring</module>-->
         <module>yui-template</module>
         <module>yui-test</module>
         <module>yui-zookeeper</module>
     </modules>
 
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Kahle Kernel</name>
+			<email>kahlkn@gmail.com</email>
+			<url>https://kahlkn.github.io</url>
+		</developer>
+	</developers>
+
+	<scm>
+		<url>https://github.com/kahlkn/yui</url>
+		<connection>scm:git:https://github.com/kahlkn/yui.git</connection>
+		<developerConnection>https://kahlkn.github.io</developerConnection>
+	</scm>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
 	<dependencies>
 
         <dependency>
-			<groupId>com.github.kahlkn</groupId>
+			<groupId>com.github.kahlkn.artoria</groupId>
 			<artifactId>artoria</artifactId>
-			<version>0.5.29.beta</version>
+			<version>0.5.30.beta</version>
         </dependency>
 
         <dependency>
@@ -54,6 +103,8 @@
 
 
     <build>
+
+		<finalName>${project.artifactId}</finalName>
 
         <plugins>
 
@@ -86,25 +137,154 @@
 				</configuration>
 				<executions>
 					<execution>
-						<phase>compile</phase>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
 						<goals>
 							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.4.2</version>
 				<configuration>
-					<skipTests>true</skipTests>
+					<skipTests>false</skipTests>
 				</configuration>
 			</plugin>
+
+			<!--<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>-->
 
 		</plugins>
 
     </build>
+
+	<profiles>
+
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.4</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5</version>
+						<configuration>
+							<autoVersionSubmodules>true</autoVersionSubmodules>
+							<useReleaseProfile>false</useReleaseProfile>
+							<releaseProfiles>release</releaseProfiles>
+							<goals>deploy</goals>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.0</version>
+						<configuration>
+							<source>1.6</source>
+							<target>1.6</target>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9.1</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.4.2</version>
+						<configuration>
+							<skipTests>false</skipTests>
+						</configuration>
+					</plugin>
+
+				</plugins>
+
+			</build>
+		</profile>
+
+	</profiles>
 
 </project>
