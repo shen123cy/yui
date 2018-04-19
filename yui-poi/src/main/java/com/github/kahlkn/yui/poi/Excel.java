@@ -117,7 +117,7 @@ public class Excel {
             if (CollectionUtils.isEmpty(beans)) {
                 return result;
             }
-            T bean = DataUtils.takeFirstNotNullElement(beans);
+            T bean = CollectionUtils.takeFirstNotNullElement(beans);
             Assert.notNull(bean, "Elements in \"beans\" all is null. ");
             // Init some.
             List<Method> usefulReadMethods = new ArrayList<Method>();
