@@ -2,8 +2,6 @@ package com.github.kahlkn.yui.zookeeper.lock;
 
 import com.github.kahlkn.artoria.lock.LockException;
 import com.github.kahlkn.artoria.lock.LockFactory;
-import com.github.kahlkn.artoria.logging.Logger;
-import com.github.kahlkn.artoria.logging.LoggerFactory;
 import com.github.kahlkn.artoria.util.Assert;
 import com.github.kahlkn.artoria.util.Hook;
 import com.github.kahlkn.artoria.util.HookUtils;
@@ -13,6 +11,8 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.locks.Lock;
 
@@ -39,7 +39,7 @@ public class ZkReentrantLockFactory implements LockFactory {
         ConnectionStateListener listener = new ZkConnectionStateListener("ZK-" + connectString);
         curator.getConnectionStateListenable().addListener(listener);
         curator.start();
-        log.info("Initialize ZkReentrantLockFactory success, and zookeeper connect address is \"" + connectString + "\".");
+        log.info("Initialize ZkReentrantLockFactory success, and zookeeper connect address is \"{}\".", connectString);
         HookUtils.addShutdownHook(new Hook() {
             @Override
             public void call() {

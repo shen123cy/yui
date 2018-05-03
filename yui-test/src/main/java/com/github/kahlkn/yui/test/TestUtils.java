@@ -1,12 +1,12 @@
 package com.github.kahlkn.yui.test;
 
 import com.github.kahlkn.artoria.exception.UncheckedException;
-import com.github.kahlkn.artoria.logging.Logger;
-import com.github.kahlkn.artoria.logging.LoggerFactory;
 import com.github.kahlkn.artoria.util.ArrayUtils;
 import com.github.kahlkn.artoria.util.Assert;
 import com.github.kahlkn.artoria.util.CollectionUtils;
 import com.github.kahlkn.artoria.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -45,11 +45,11 @@ public class TestUtils {
             TestTask task = tasks.get(i);
             String name = task.getName();
             name = StringUtils.isNotBlank(name) ? name : "Task" + i;
-            log.info("Start test task \"" + name + "\". ");
+            log.info("Start test task \"{}\". ", name);
             long start = System.currentTimeMillis();
             task.execute();
             long end = System.currentTimeMillis();
-            log.info("End test task \"" + name + "\" and cost " + (end - start) + "ms. ");
+            log.info("End test task \"{}\" and cost {}ms. ", name, end - start);
             results.add(task.getResult());
         }
         return results;

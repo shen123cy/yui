@@ -1,11 +1,11 @@
 package com.github.kahlkn.yui.zookeeper;
 
-import com.github.kahlkn.artoria.logging.Logger;
-import com.github.kahlkn.artoria.logging.LoggerFactory;
 import com.github.kahlkn.artoria.util.Assert;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Zookeeper simple connection state listener.
@@ -23,13 +23,13 @@ public class ZkConnectionStateListener implements ConnectionStateListener {
     @Override
     public void stateChanged(CuratorFramework client, ConnectionState state) {
         if (state == ConnectionState.LOST) {
-            log.debug(listenerName + " : A client lost session with zookeeper. ");
+            log.debug("{} : A client lost session with zookeeper. ", listenerName);
         }
         else if (state == ConnectionState.CONNECTED) {
-            log.debug(listenerName + " : A client connected with zookeeper. ");
+            log.debug("{} : A client connected with zookeeper. ", listenerName);
         }
         else if (state == ConnectionState.RECONNECTED) {
-            log.debug(listenerName + " : A client reconnected with zookeeper. ");
+            log.debug("{} : A client reconnected with zookeeper. ", listenerName);
         }
     }
 

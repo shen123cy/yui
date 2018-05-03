@@ -1,6 +1,6 @@
 package com.github.kahlkn.yui.template;
 
-import com.github.kahlkn.artoria.template.TemplateEngine;
+import com.github.kahlkn.yui.template.support.VelocityAdapter;
 import org.junit.Before;
 import org.junit.Test;
 

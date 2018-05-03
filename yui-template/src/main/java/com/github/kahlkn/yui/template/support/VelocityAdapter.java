@@ -1,7 +1,7 @@
-package com.github.kahlkn.yui.template;
+package com.github.kahlkn.yui.template.support;
 
-import com.github.kahlkn.artoria.template.EngineAdapter;
 import com.github.kahlkn.artoria.util.Assert;
+import com.github.kahlkn.yui.template.EngineAdapter;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
