@@ -15,7 +15,7 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>com.github.kahlkn.yui</groupId>
+			<groupId>com.github.kahlkn</groupId>
 			<artifactId>yui-test</artifactId>
 			<version>${yui.version}</version>
 			<scope>test</scope>

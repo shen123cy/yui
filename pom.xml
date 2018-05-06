@@ -40,7 +40,7 @@
         <!--<module>yui-rss</module>-->
         <!--<module>yui-selenium</module>-->
         <!--<module>yui-spring</module>-->
-        <module>yui-template</module>
+        <!--<module>yui-template</module>-->
         <module>yui-test</module>
         <module>yui-zookeeper</module>
     </modules>
@@ -88,13 +88,20 @@
         <dependency>
 			<groupId>com.github.kahlkn</groupId>
 			<artifactId>artoria</artifactId>
-			<version>0.5.30.beta</version>
+			<version>0.5.31.beta</version>
         </dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+			<version>1.5.6.RELEASE</version>
+			<scope>provided</scope>
 		</dependency>
 
         <dependency>
@@ -116,13 +123,6 @@
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-autoconfigure</artifactId>
-			<version>1.5.6.RELEASE</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!--<dependency>

@@ -2,10 +2,10 @@ package com.github.kahlkn.yui.email;
 
 import com.github.kahlkn.artoria.exception.UncheckedException;
 import com.github.kahlkn.artoria.io.IOUtils;
-import com.github.kahlkn.artoria.logging.Logger;
-import com.github.kahlkn.artoria.logging.LoggerFactory;
 import com.github.kahlkn.artoria.time.DateTime;
 import com.github.kahlkn.artoria.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;

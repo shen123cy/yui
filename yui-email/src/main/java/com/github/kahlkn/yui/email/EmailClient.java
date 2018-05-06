@@ -1,12 +1,12 @@
 package com.github.kahlkn.yui.email;
 
 import com.github.kahlkn.artoria.io.FileUtils;
-import com.github.kahlkn.artoria.logging.Logger;
-import com.github.kahlkn.artoria.logging.LoggerFactory;
 import com.github.kahlkn.artoria.util.ArrayUtils;
 import com.github.kahlkn.artoria.util.Assert;
 import com.github.kahlkn.artoria.util.PropUtils;
 import com.github.kahlkn.artoria.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
 import javax.mail.internet.MimeMessage;
