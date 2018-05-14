@@ -32,15 +32,15 @@
 	</properties>
 
     <modules>
-        <!--<module>yui-core</module>-->
+        <module>yui-core</module>
         <module>yui-email</module>
         <!--<module>yui-generator</module>-->
         <module>yui-poi</module>
         <!--<module>yui-redis</module>-->
-        <!--<module>yui-rss</module>-->
+        <module>yui-rss</module>
         <!--<module>yui-selenium</module>-->
         <!--<module>yui-spring</module>-->
-        <!--<module>yui-template</module>-->
+        <module>yui-template</module>
         <module>yui-test</module>
         <module>yui-zookeeper</module>
     </modules>
@@ -88,7 +88,7 @@
         <dependency>
 			<groupId>com.github.kahlkn</groupId>
 			<artifactId>artoria</artifactId>
-			<version>0.5.31.beta</version>
+			<version>0.5.32.beta</version>
         </dependency>
 
 		<dependency>
