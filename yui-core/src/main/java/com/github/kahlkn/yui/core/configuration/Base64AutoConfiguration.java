@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
  * @author Kahle
  */
 @Configuration
-public class Base64Configuration implements InitializingBean, DisposableBean {
-    private static Logger log = LoggerFactory.getLogger(Base64Configuration.class);
+public class Base64AutoConfiguration implements InitializingBean, DisposableBean {
+    private static Logger log = LoggerFactory.getLogger(Base64AutoConfiguration.class);
     private static final String COMMONS_CODEC_BASE64 = "org.apache.commons.codec.binary.Base64";
 
     @Override

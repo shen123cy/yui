@@ -25,8 +25,8 @@ import java.util.List;
  * @author Kahle
  */
 @Configuration
-public class ReflectConfiguration implements InitializingBean, DisposableBean {
-    private static Logger log = LoggerFactory.getLogger(ReflectConfiguration.class);
+public class ReflectAutoConfiguration implements InitializingBean, DisposableBean {
+    private static Logger log = LoggerFactory.getLogger(ReflectAutoConfiguration.class);
 
     @Override
     public void afterPropertiesSet() throws Exception {

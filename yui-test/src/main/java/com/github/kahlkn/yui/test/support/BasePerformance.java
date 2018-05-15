@@ -217,7 +217,7 @@ abstract class BasePerformance implements TestTask {
         for (Object number : data) {
             sum += ((Number) number).doubleValue();
         }
-        return NumberUtils.round(sum / data.size());
+        return NumberUtils.round(sum / data.size()).doubleValue();
     }
 
     private static List<Double> averageList(List data) {
@@ -240,12 +240,12 @@ abstract class BasePerformance implements TestTask {
             num = ((Number) number).doubleValue();
             sum += Math.pow((num - avg), 2);
         }
-        return NumberUtils.round(sum / data.size());
+        return NumberUtils.round(sum / data.size()).doubleValue();
     }
 
     private static Double stddeviation(Double variance) {
         Assert.notNull(variance, "Parameter \"variance\" must not null. ");
-        return NumberUtils.round(Math.sqrt(variance));
+        return NumberUtils.round(Math.sqrt(variance)).doubleValue();
     }
 
     private static List<Double> varianceList(List data, List averages) {

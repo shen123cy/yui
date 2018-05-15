@@ -16,8 +16,8 @@ import java.security.Security;
  * @author Kahle
  */
 @Configuration
-public class CryptoConfiguration implements InitializingBean, DisposableBean {
-    private static Logger log = LoggerFactory.getLogger(CryptoConfiguration.class);
+public class CryptoAutoConfiguration implements InitializingBean, DisposableBean {
+    private static Logger log = LoggerFactory.getLogger(CryptoAutoConfiguration.class);
 
     @Override
     public void afterPropertiesSet() throws Exception {
