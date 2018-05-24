@@ -3,8 +3,8 @@ package com.github.kahlkn.yui.core.common;
 import java.io.Serializable;
 
 /**
- * Uniform result object.
- * @param <T> Data type you input
+ * Uniform result output object.
+ * @param <T> Data type
  * @author Kahle
  */
 public class Result<T> implements Serializable {

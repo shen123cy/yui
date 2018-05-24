@@ -15,6 +15,7 @@ import static com.github.kahlkn.artoria.util.Const.*;
  * Request tools.
  * @author Kahle
  */
+@Deprecated
 public class RequestUtils {
 
     public static boolean isMultipart(HttpServletRequest request) {

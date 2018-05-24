@@ -1,5 +1,7 @@
 package com.github.kahlkn.yui.core.codec;
 
+import com.github.kahlkn.artoria.exception.ExceptionUtils;
+import com.github.kahlkn.artoria.util.Assert;
 import com.github.kahlkn.artoria.util.PathUtils;
 import com.github.kahlkn.artoria.util.StringUtils;
 import com.google.zxing.*;
@@ -7,10 +9,9 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,29 +20,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Barcode encode and decode tools.
  * @author Kahle
  */
 public class Barcode {
-    private static final Logger log = LoggerFactory.getLogger(Barcode.class);
+    private static final int DEFAULT_IMAGE_TYPE = BufferedImage.TYPE_INT_RGB;
+    private static final String DEFAULT_FILE_EXTENSION = ".jpg";
     private static final int DEFAULT_TRUE_COLOR = 0xFF000000;
     private static final int DEFAULT_FALSE_COLOR = 0xFFFFFFFF;
-    private static final int DEFAULT_IMAGE_TYPE = BufferedImage.TYPE_INT_RGB;
 
-    public static Barcode on() {
+    public static Barcode create() {
         return new Barcode();
     }
 
-    public static Barcode on(BarcodeFormat barcodeFormat) {
-        return new Barcode().setBarcodeFormat(barcodeFormat);
-    }
-
-    public static Barcode on(int width, int height) {
+    public static Barcode create(int width, int height) {
         return new Barcode().setWidth(width).setHeight(height);
     }
 
-    public static Barcode on(BarcodeFormat barcodeFormat, int width, int height) {
-        return new Barcode().setWidth(width)
-                .setHeight(height).setBarcodeFormat(barcodeFormat);
+    public static BufferedImage toBufferedImage(File file) throws IOException {
+        return ImageIO.read(file);
     }
 
     public static BufferedImage toBufferedImage(BitMatrix bitMatrix, int imageType, int trueColor, int falseColor) {
@@ -55,32 +52,57 @@ public class Barcode {
         return image;
     }
 
-    private String charset = Charset.defaultCharset().name();
     private Map<EncodeHintType, Object> encodeHints = new HashMap<EncodeHintType, Object>();
     private Map<DecodeHintType, Object> decodeHints = new HashMap<DecodeHintType, Object>();
-    private int trueColor = DEFAULT_TRUE_COLOR;
-    private int falseColor = DEFAULT_FALSE_COLOR;
-    private int imageType = DEFAULT_IMAGE_TYPE;
+    private ErrorCorrectionLevel errorCorrectionLevel = ErrorCorrectionLevel.H;
     private BarcodeFormat barcodeFormat = BarcodeFormat.QR_CODE;
+    private String charset = Charset.defaultCharset().name();
+    private int falseColor = DEFAULT_FALSE_COLOR;
+    private int trueColor = DEFAULT_TRUE_COLOR;
+    private int imageType = DEFAULT_IMAGE_TYPE;
     private int width = 500;
     private int height = 500;
+    private int margin = 1;
+    private File logo;
 
     private Barcode() {
+    }
+
+    private void handleHints() {
         encodeHints.put(EncodeHintType.CHARACTER_SET, charset);
-        encodeHints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
-        encodeHints.put(EncodeHintType.MARGIN, 1);
+        encodeHints.put(EncodeHintType.ERROR_CORRECTION, errorCorrectionLevel);
+        encodeHints.put(EncodeHintType.MARGIN, margin);
         decodeHints.put(DecodeHintType.CHARACTER_SET, charset);
     }
 
-    public String getCharset() {
-        return charset;
-    }
-
-    public Barcode setCharset(String charset) {
-        this.charset = charset;
-        encodeHints.put(EncodeHintType.CHARACTER_SET, charset);
-        decodeHints.put(DecodeHintType.CHARACTER_SET, charset);
-        return this;
+    private void handleLogo(BufferedImage image) {
+        if (logo == null) { return; }
+        Assert.state(logo.exists(), "Parameter \"logo\" must exist. ");
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+        double rate;
+        switch (errorCorrectionLevel) {
+            case L:{ rate = 0.20; } break;
+            case M:{ rate = 0.25; } break;
+            case Q:{ rate = 0.27; } break;
+            case H:{ rate = 0.28; } break;
+            default:{
+                throw new IllegalArgumentException("Parameter \"errorCorrectionLevel\" is illegal. ");
+            }
+        }
+        int logoWidth = Double.valueOf(imageWidth * rate).intValue();
+        int logoHeight = Double.valueOf(imageHeight * rate).intValue();
+        int logoX = (imageWidth - logoWidth) / 2;
+        int logoY = (imageHeight - logoHeight) / 2;
+        try {
+            BufferedImage logoImage = ImageIO.read(logo);
+            Graphics2D graphics = image.createGraphics();
+            graphics.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight, null);
+            graphics.dispose();
+        }
+        catch (Exception e) {
+            throw ExceptionUtils.wrap(e);
+        }
     }
 
     public Map<EncodeHintType, Object> getEncodeHints() {
@@ -121,12 +143,30 @@ public class Barcode {
         return this;
     }
 
-    public int getTrueColor() {
-        return trueColor;
+    public ErrorCorrectionLevel getErrorCorrectionLevel() {
+        return errorCorrectionLevel;
     }
 
-    public Barcode setTrueColor(int trueColor) {
-        this.trueColor = trueColor;
+    public Barcode setErrorCorrectionLevel(ErrorCorrectionLevel errorCorrectionLevel) {
+        this.errorCorrectionLevel = errorCorrectionLevel;
+        return this;
+    }
+
+    public BarcodeFormat getBarcodeFormat() {
+        return barcodeFormat;
+    }
+
+    public Barcode setBarcodeFormat(BarcodeFormat barcodeFormat) {
+        this.barcodeFormat = barcodeFormat;
+        return this;
+    }
+
+    public String getCharset() {
+        return charset;
+    }
+
+    public Barcode setCharset(String charset) {
+        this.charset = charset;
         return this;
     }
 
@@ -139,21 +179,21 @@ public class Barcode {
         return this;
     }
 
+    public int getTrueColor() {
+        return trueColor;
+    }
+
+    public Barcode setTrueColor(int trueColor) {
+        this.trueColor = trueColor;
+        return this;
+    }
+
     public int getImageType() {
         return imageType;
     }
 
     public Barcode setImageType(int imageType) {
         this.imageType = imageType;
-        return this;
-    }
-
-    public BarcodeFormat getBarcodeFormat() {
-        return barcodeFormat;
-    }
-
-    public Barcode setBarcodeFormat(BarcodeFormat barcodeFormat) {
-        this.barcodeFormat = barcodeFormat;
         return this;
     }
 
@@ -175,13 +215,32 @@ public class Barcode {
         return this;
     }
 
+    public int getMargin() {
+        return margin;
+    }
+
+    public Barcode setMargin(int margin) {
+        this.margin = margin;
+        return this;
+    }
+
+    public File getLogo() {
+        return logo;
+    }
+
+    public Barcode setLogo(File logo) {
+        this.logo = logo;
+        return this;
+    }
+
     public BitMatrix encode(String content) throws WriterException {
-        log.info("Encode \"" + content + "\" to \"" + barcodeFormat.name() + "\"(" + width + "*" + height + "). ");
+        this.handleHints();
         MultiFormatWriter writer = new MultiFormatWriter();
         return writer.encode(content, barcodeFormat, width, height, encodeHints);
     }
 
     public Result decode(BufferedImage image) throws NotFoundException {
+        this.handleHints();
         LuminanceSource source = new BufferedImageLuminanceSource(image);
         Binarizer binarizer = new HybridBinarizer(source);
         BinaryBitmap binaryBitmap = new BinaryBitmap(binarizer);
@@ -189,28 +248,30 @@ public class Barcode {
         return reader.decode(binaryBitmap, decodeHints);
     }
 
+    public String decodeToText(BufferedImage image) throws NotFoundException {
+        Result result = this.decode(image);
+        return result != null ? result.getText() : null;
+    }
+
     public BufferedImage encodeToImage(String content) throws WriterException {
         BitMatrix bitMatrix = this.encode(content);
-        return toBufferedImage(bitMatrix, imageType, trueColor, falseColor);
+        BufferedImage bufferedImage = Barcode.toBufferedImage(bitMatrix, imageType, trueColor, falseColor);
+        this.handleLogo(bufferedImage);
+        return bufferedImage;
+    }
+
+    public String decodeToText(File file) throws NotFoundException, IOException {
+        BufferedImage image = Barcode.toBufferedImage(file);
+        return this.decodeToText(image);
     }
 
     public boolean encodeToImage(String content, File file) throws WriterException, IOException {
         BufferedImage image = this.encodeToImage(content);
         String extension = PathUtils.getExtension(file.toString());
         if (StringUtils.isBlank(extension)) {
-            extension = "jpg";
-            file = new File(file.toString() + ".jpg");
+            file = new File(file.toString(), DEFAULT_FILE_EXTENSION);
         }
         return ImageIO.write(image, extension, file);
-    }
-
-    public String decodeToText(BufferedImage image) throws NotFoundException {
-        return this.decode(image).getText();
-    }
-
-    public String decodeToText(File file) throws NotFoundException, IOException {
-        BufferedImage image = ImageIO.read(file);
-        return this.decodeToText(image);
     }
 
 }

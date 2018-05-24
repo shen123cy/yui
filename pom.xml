@@ -35,7 +35,7 @@
     <modules>
         <module>yui-core</module>
         <module>yui-email</module>
-        <!--<module>yui-generator</module>-->
+        <module>yui-generator</module>
         <module>yui-poi</module>
         <!--<module>yui-redis</module>-->
         <!--<module>yui-rss</module>-->

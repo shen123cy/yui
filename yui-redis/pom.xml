@@ -2,28 +2,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<groupId>com.github.kahlkn</groupId>
-		<artifactId>yui</artifactId>
-		<version>0.1.1.alpha</version>
-	</parent>
+    <parent>
+        <groupId>com.github.kahlkn</groupId>
+        <artifactId>yui</artifactId>
+        <version>0.1.1.alpha</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>yui-redis</artifactId>
-	<version>0.1.1.alpha</version>
+    <version>0.1.1.alpha</version>
     <packaging>jar</packaging>
 
-	<dependencies>
+    <dependencies>
 
-		<!-- //// jedis //// -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>2.9.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- //////////////// -->
+        <!-- //// jedis //// -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- //////////////// -->
 
-	</dependencies>
+    </dependencies>
 
     <build>
     </build>

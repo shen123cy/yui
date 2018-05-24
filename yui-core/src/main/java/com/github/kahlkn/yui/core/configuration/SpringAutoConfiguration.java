@@ -16,9 +16,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SpringAutoConfiguration implements InitializingBean, DisposableBean {
     private static Logger log = LoggerFactory.getLogger(SpringAutoConfiguration.class);
+    private ApplicationContext applicationContext;
 
     @Autowired
-    private ApplicationContext applicationContext;
+    public SpringAutoConfiguration(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {

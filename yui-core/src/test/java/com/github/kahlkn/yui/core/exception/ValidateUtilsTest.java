@@ -7,17 +7,14 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ValidateTest {
-    private Logger log = LoggerFactory.getLogger(ValidateTest.class);
+public class ValidateUtilsTest {
+    private Logger log = LoggerFactory.getLogger(ValidateUtilsTest.class);
 
     @Test
     public void test1() {
         try {
             Map<String, Object> data = new HashMap<String, Object>();
-            Validate.notEmpty(data
-                    , SystemCode.code1
-                    , "Data should not null in here. "
-            );
+            ValidateUtils.notEmpty(data, SystemCode.code1);
         }
         catch (BusinessException e) {
             log.error(e.getMessage(), e);
@@ -28,10 +25,7 @@ public class ValidateTest {
     public void test2() {
         try {
             Map<String, Object> data = new HashMap<String, Object>();
-            Validate.notEmpty(data
-                    , "Please input something first."
-                    , "Data should not null in here. "
-            );
+            ValidateUtils.notEmpty(data, SystemCode.code2);
         }
         catch (BusinessException e) {
             log.error(e.getMessage(), e);

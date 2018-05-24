@@ -48,4 +48,15 @@ public class EnhancerTest {
         System.out.println(subjectProxy.sayGoodbye(name));
     }
 
+    @Test
+    public void testSpringCglibEnhancer() {
+        Enhancer.setProxyFactory(new SpringCglibProxyFactory());
+        RealSubject subject = new RealSubject();
+        TestInterceptor intertr = new TestInterceptor(subject);
+        // RealSubject subjectProxy = (RealSubject) Enhancer.enhance(subject, intertr);
+        Subject subjectProxy = (Subject) Enhancer.enhance(Subject.class, intertr);
+        System.out.println(subjectProxy.sayHello(name));
+        System.out.println(subjectProxy.sayGoodbye(name));
+    }
+
 }

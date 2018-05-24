@@ -24,5 +24,4 @@ public enum SystemCode implements ErrorCode {
         return content;
     }
 
-
 }

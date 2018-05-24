@@ -2,44 +2,44 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<groupId>com.github.kahlkn</groupId>
-		<artifactId>yui</artifactId>
-		<version>0.1.1.alpha</version>
-	</parent>
+    <parent>
+        <groupId>com.github.kahlkn</groupId>
+        <artifactId>yui</artifactId>
+        <version>0.1.1.alpha</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>yui-email</artifactId>
-	<version>0.1.1.alpha</version>
+    <version>0.1.1.alpha</version>
     <packaging>jar</packaging>
 
-	<dependencies>
+    <dependencies>
 
-		<!-- //// java mail //// -->
-		<!--<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>javax.mail-api</artifactId>
-			<version>${mail.version}</version>
-			<scope>provided</scope>
-		</dependency>-->
+        <!-- //// java mail //// -->
+        <!--<dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>javax.mail-api</artifactId>
+            <version>${mail.version}</version>
+            <scope>provided</scope>
+        </dependency>-->
 
-		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>${mail.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- //////////////// -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${mail.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- //////////////// -->
 
-		<!-- //// commons email //// -->
-		<!--<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-email</artifactId>
-			<version>${commons-email.version}</version>
-			<scope>provided</scope>
-		</dependency>-->
-		<!-- //////////////// -->
+        <!-- //// commons email //// -->
+        <!--<dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+            <version>${commons-email.version}</version>
+            <scope>provided</scope>
+        </dependency>-->
+        <!-- //////////////// -->
 
-	</dependencies>
+    </dependencies>
 
     <build>
     </build>

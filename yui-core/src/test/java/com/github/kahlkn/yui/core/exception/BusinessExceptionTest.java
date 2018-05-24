@@ -1,5 +1,6 @@
 package com.github.kahlkn.yui.core.exception;
 
+import com.github.kahlkn.artoria.exception.ExceptionUtils;
 import com.github.kahlkn.artoria.exception.UncheckedException;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -11,8 +12,7 @@ public class BusinessExceptionTest {
     @Test
     public void createAndSetOthers() {
         try {
-            throw new BusinessException(SystemCode.code1)
-                    .setDescription("address in %s, say \"%s\". ", "0364294", "hello");
+            throw new BusinessException(SystemCode.code1);
         }
         catch (BusinessException e) {
             log.error(e.getMessage(), e);
@@ -21,21 +21,19 @@ public class BusinessExceptionTest {
 
     private void throwException1() throws BusinessException {
         try {
-            throw new BusinessException(SystemCode.code1)
-                    .setDescription("[BusinessException]: Just Test...");
+            throw new BusinessException(SystemCode.code1);
         }
         catch (BusinessException e) {
-            throw BusinessException.wrap(e);
+            throw ExceptionUtils.wrap(e);
         }
     }
 
     private void throwException2() throws BusinessException {
         try {
-            throw new UncheckedException(
-                    "[UncheckedException]: Just Test...");
+            throw new UncheckedException("[UncheckedException]: Just Test...");
         }
         catch (Exception e) {
-            throw BusinessException.wrap(e);
+            throw ExceptionUtils.wrap(e);
         }
     }
 
