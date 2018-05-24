@@ -17,16 +17,12 @@ import java.security.Security;
  */
 @Configuration
 public class CryptoAutoConfiguration implements InitializingBean, DisposableBean {
+    private static final String BOUNCY_CASTLE_CLASS = "org.bouncycastle.jce.provider.BouncyCastleProvider";
     private static Logger log = LoggerFactory.getLogger(CryptoAutoConfiguration.class);
 
     @Override
     public void afterPropertiesSet() throws Exception {
         this.loadBouncyCastle();
-        Provider[] providers = Security.getProviders();
-        for (Provider provider : providers) {
-            log.debug("Provider: " + provider.getClass().getName()
-                    + "(Version: " + provider.getVersion() + ")");
-        }
     }
 
     @Override
@@ -34,20 +30,20 @@ public class CryptoAutoConfiguration implements InitializingBean, DisposableBean
     }
 
     private void loadBouncyCastle() {
-        String className = "org.bouncycastle.jce.provider.BouncyCastleProvider";
         ClassLoader loader = ClassUtils.getDefaultClassLoader();
-        if (!ClassUtils.isPresent(className, loader)) {
+        if (!ClassUtils.isPresent(BOUNCY_CASTLE_CLASS, loader)) {
             return;
         }
         try {
-            Object o = ReflectUtils.newInstance(className);
+            Object o = ReflectUtils.newInstance(BOUNCY_CASTLE_CLASS);
             Provider provider = (Provider) o;
             Security.addProvider(provider);
-            log.info("Init " + provider.getClass().getName()
-                    + " " + provider.getVersion());
+            String name = provider.getClass().getName();
+            double version = provider.getVersion();
+            log.info("Initialize {} {} success. ", name, version);
         }
         catch (Exception e) {
-            log.debug(e.getMessage(), e);
+            log.info(e.getMessage(), e);
         }
     }
 

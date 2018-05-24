@@ -3,7 +3,8 @@ package com.github.kahlkn.yui.core.exception;
 
 public enum SystemCode implements ErrorCode {
     code1("code1", "Username is null! "),
-    code2("code2", "Password is null! ");
+    code2("code2", "Password is null! ")
+    ;
 
     private String code;
     private String content;

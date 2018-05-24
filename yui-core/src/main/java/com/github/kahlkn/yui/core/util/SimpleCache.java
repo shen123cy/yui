@@ -9,6 +9,7 @@ import java.util.Map;
  * @see ReferenceHashMap
  * @author Kahle
  */
+@Deprecated
 public class SimpleCache {
     private final Map<Object, Object> storage;
 

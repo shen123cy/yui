@@ -11,12 +11,12 @@ import java.util.List;
 import static com.github.kahlkn.artoria.util.Const.GET_OR_SET_LENGTH;
 
 /**
- * Cglib bean copier.
+ * Spring cglib bean copier.
  * @author Kahle
  */
-public class CglibBeanCopier implements BeanCopier {
+public class SpringCglibBeanCopier implements BeanCopier {
 
-    private static class CglibConverterAdapter implements net.sf.cglib.core.Converter {
+    private static class SpringCglibConverterAdapter implements org.springframework.cglib.core.Converter {
         private Converter converter;
         private List<String> ignoreProperties;
         private boolean hasIgnore;
@@ -26,7 +26,7 @@ public class CglibBeanCopier implements BeanCopier {
             this.converter = converter;
         }
 
-        public CglibConverterAdapter(Converter converter, List<String> ignoreProperties) {
+        public SpringCglibConverterAdapter(Converter converter, List<String> ignoreProperties) {
             this.setConverter(converter);
             this.ignoreProperties = ignoreProperties;
             this.hasIgnore = CollectionUtils.isNotEmpty(ignoreProperties);
@@ -49,9 +49,9 @@ public class CglibBeanCopier implements BeanCopier {
     public void copy(Object from, Object to, List<String> ignoreProperties, Converter converter) {
         Class<?> fromClass = from.getClass();
         Class<?> toClass = to.getClass();
-        net.sf.cglib.beans.BeanCopier copier =
-                net.sf.cglib.beans.BeanCopier.create(fromClass, toClass, true);
-        CglibConverterAdapter adapter = new CglibConverterAdapter(converter, ignoreProperties);
+        org.springframework.cglib.beans.BeanCopier copier =
+                org.springframework.cglib.beans.BeanCopier.create(fromClass, toClass, true);
+        SpringCglibConverterAdapter adapter = new SpringCglibConverterAdapter(converter, ignoreProperties);
         copier.copy(from, to, adapter);
     }
 

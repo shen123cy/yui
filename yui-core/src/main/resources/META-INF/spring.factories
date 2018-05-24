@@ -1,5 +1,7 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.github.kahlkn.yui.core.configuration.Base64AutoConfiguration,\
+com.github.kahlkn.yui.core.configuration.BeanUtilsAutoConfiguration,\
 com.github.kahlkn.yui.core.configuration.CryptoAutoConfiguration,\
+com.github.kahlkn.yui.core.configuration.LoggerAutoConfiguration,\
 com.github.kahlkn.yui.core.configuration.ReflectAutoConfiguration,\
-com.github.kahlkn.yui.core.configuration.Slf4jAutoConfiguration
+com.github.kahlkn.yui.core.configuration.SpringAutoConfiguration

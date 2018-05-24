@@ -1,9 +1,9 @@
 package com.github.kahlkn.yui.core.exception;
 
 import com.github.kahlkn.artoria.exception.UncheckedException;
-import com.github.kahlkn.artoria.logging.Logger;
-import com.github.kahlkn.artoria.logging.LoggerFactory;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BusinessExceptionTest {
     private static Logger log = LoggerFactory.getLogger(BusinessExceptionTest.class);

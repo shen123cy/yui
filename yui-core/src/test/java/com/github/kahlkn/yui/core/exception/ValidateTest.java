@@ -1,8 +1,8 @@
 package com.github.kahlkn.yui.core.exception;
 
-import com.github.kahlkn.artoria.logging.Logger;
-import com.github.kahlkn.artoria.logging.LoggerFactory;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class ValidateTest {
             );
         }
         catch (BusinessException e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -34,7 +34,7 @@ public class ValidateTest {
             );
         }
         catch (BusinessException e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
         }
     }
 

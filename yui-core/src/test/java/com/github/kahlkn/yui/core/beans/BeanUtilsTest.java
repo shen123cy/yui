@@ -16,7 +16,8 @@ public class BeanUtilsTest {
     @Test
     public void testIgnoreCglibCopy() {
         Person person = RandomUtils.nextObject(Person.class);
-        BeanUtils.setBeanCopier(new CglibBeanCopier());
+        // BeanUtils.setBeanCopier(new CglibBeanCopier());
+        BeanUtils.setBeanCopier(new SpringCglibBeanCopier());
         List<String> ignore = new ArrayList<String>();
         Collections.addAll(ignore, "name", "age", "123test");
         Student student = new Student();

@@ -25,6 +25,7 @@ import java.util.List;
  * @author Kahle
  */
 @Configuration
+@Deprecated
 public class ReflectAutoConfiguration implements InitializingBean, DisposableBean {
     private static Logger log = LoggerFactory.getLogger(ReflectAutoConfiguration.class);
 

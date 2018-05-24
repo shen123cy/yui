@@ -2,9 +2,9 @@ package com.github.kahlkn.yui.core.aop;
 
 import com.github.kahlkn.artoria.aop.Enhancer;
 import com.github.kahlkn.artoria.aop.Interceptor;
-import com.github.kahlkn.artoria.logging.Logger;
-import com.github.kahlkn.artoria.logging.LoggerFactory;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 

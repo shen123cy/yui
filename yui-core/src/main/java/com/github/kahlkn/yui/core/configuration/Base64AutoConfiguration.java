@@ -20,10 +20,10 @@ public class Base64AutoConfiguration implements InitializingBean, DisposableBean
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        ClassLoader classLoader = Base64.class.getClassLoader();
-        // Apache Commons Codec present on the classpath?
+        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
+        // If have Apache Commons Codec, to use it.
         if (ClassUtils.isPresent(COMMONS_CODEC_BASE64, classLoader)) {
-            log.info("Use base64 class: " + COMMONS_CODEC_BASE64);
+            log.info("Use base64 provider: " + COMMONS_CODEC_BASE64);
             CommonsCodecBase64Delegate delegate = new CommonsCodecBase64Delegate();
             Base64.setBase64Delegate(delegate);
         }
@@ -33,7 +33,7 @@ public class Base64AutoConfiguration implements InitializingBean, DisposableBean
     public void destroy() throws Exception {
     }
 
-    static class CommonsCodecBase64Delegate implements Base64.Base64Delegate {
+    private static class CommonsCodecBase64Delegate implements Base64.Base64Delegate {
 
         private final org.apache.commons.codec.binary.Base64 base64 =
                 new org.apache.commons.codec.binary.Base64();

@@ -8,25 +8,30 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Slf4j auto configuration.
+ * Logger auto configuration.
  * @author Kahle
  */
 @Configuration
-public class Slf4jAutoConfiguration implements InitializingBean, DisposableBean {
-    private static Logger log = LoggerFactory.getLogger(Slf4jAutoConfiguration.class);
+public class LoggerAutoConfiguration implements InitializingBean, DisposableBean {
+    private static Logger log = LoggerFactory.getLogger(LoggerAutoConfiguration.class);
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        this.initJulToSlf4j();
+    }
+
+    @Override
+    public void destroy() throws Exception {
+    }
+
+    private void initJulToSlf4j() {
         // Optionally remove existing handlers attached to j.u.l root logger
         // (since SLF4J 1.6.5)
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         // add SLF4JBridgeHandler to j.u.l's root logger, should be done once during
         // the initialization phase of your application
         SLF4JBridgeHandler.install();
-    }
-
-    @Override
-    public void destroy() throws Exception {
+        log.info("Jul to slf4j initialize success.");
     }
 
 }
