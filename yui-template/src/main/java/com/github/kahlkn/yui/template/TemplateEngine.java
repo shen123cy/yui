@@ -1,75 +1,90 @@
 package com.github.kahlkn.yui.template;
 
-import com.github.kahlkn.artoria.io.StringBuilderWriter;
-import com.github.kahlkn.artoria.util.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.Writer;
 
-import static com.github.kahlkn.artoria.util.Const.DEFAULT_CHARSET_NAME;
-
 /**
- * Template engine object.
+ * Template engine.
  * @author Kahle
  */
-public class TemplateEngine {
-    private static Logger log = LoggerFactory.getLogger(TemplateEngine.class);
-    private EngineAdapter adapter;
+public interface TemplateEngine {
 
-    public TemplateEngine(EngineAdapter adapter) {
-        this.setAdapter(adapter);
-    }
+    /**
+     * Rendering template by name.
+     * @param name Template name
+     * @param data Template filled model
+     * @param writer Render result
+     * @throws Exception Have more different exception
+     */
+    void render(String name, Object data, Writer writer) throws Exception;
 
-    public EngineAdapter getAdapter() {
-        return adapter;
-    }
+    /**
+     * Rendering template by name.
+     * @param name Template name
+     * @param encoding Template content charset
+     * @param data Template filled model
+     * @param writer Render result
+     * @throws Exception Have more different exception
+     */
+    void render(String name, String encoding, Object data, Writer writer) throws Exception;
 
-    public void setAdapter(EngineAdapter adapter) {
-        Assert.notNull(adapter, "Parameter \"adapter\" must not null. ");
-        this.adapter = adapter;
-    }
+    /**
+     * Rendering template by content.
+     * @param data Template filled model
+     * @param writer Render result
+     * @param logTag Template name and log messages name
+     * @param template Template string
+     * @throws Exception Have more different exception
+     */
+    void render(Object data, Writer writer, String logTag, String template) throws Exception;
 
-    public void render(String name, Object data, Writer writer) throws Exception {
-        this.render(name, DEFAULT_CHARSET_NAME, data, writer);
-    }
+    /**
+     * Rendering template by content.
+     * @param data Template filled model
+     * @param writer Render result
+     * @param logTag Template name and log messages name
+     * @param reader Template input stream
+     * @throws Exception Have more different exception
+     */
+    void render(Object data, Writer writer, String logTag, Reader reader) throws Exception;
 
-    public void render(String name, String encoding, Object data, Writer writer) throws Exception {
-        adapter.render(name, encoding, data, writer);
-    }
+    /**
+     * Rendering template by name.
+     * @param name Template name
+     * @param data Template filled model
+     * @return Render result
+     * @throws Exception Have more different exception
+     */
+    String renderToString(String name, Object data) throws Exception;
 
-    public void render(Object data, Writer writer, String logTag, String template) throws Exception {
-        Assert.notBlank(template, "Parameter \"template\" must not blank. ");
-        StringReader reader = new StringReader(template);
-        this.render(data, writer, logTag, reader);
-    }
+    /**
+     * Rendering template by name.
+     * @param name Template name
+     * @param encoding Template content charset
+     * @param data Template filled model
+     * @return Render result
+     * @throws Exception Have more different exception
+     */
+    String renderToString(String name, String encoding, Object data) throws Exception;
 
-    public void render(Object data, Writer writer, String logTag, Reader reader) throws Exception {
-        adapter.render(data, writer, logTag, reader);
-    }
+    /**
+     * Rendering template by content.
+     * @param data Template filled model
+     * @param logTag Template name and log messages name
+     * @param template Template string
+     * @return Render result
+     * @throws Exception Have more different exception
+     */
+    String renderToString(Object data, String logTag, String template) throws Exception;
 
-    public String renderToString(String name, Object data) throws Exception {
-        return this.renderToString(name, DEFAULT_CHARSET_NAME, data);
-    }
-
-    public String renderToString(String name, String encoding, Object data) throws Exception {
-        StringBuilderWriter writer = new StringBuilderWriter();
-        adapter.render(name, encoding, data, writer);
-        return writer.toString();
-    }
-
-    public String renderToString(Object data, String logTag, String template) throws Exception {
-        Assert.notBlank(template, "Parameter \"template\" must not blank. ");
-        StringReader reader = new StringReader(template);
-        return this.renderToString(data, logTag, reader);
-    }
-
-    public String renderToString(Object data, String logTag, Reader reader) throws Exception {
-        StringBuilderWriter writer = new StringBuilderWriter();
-        adapter.render(data, writer, logTag, reader);
-        return writer.toString();
-    }
+    /**
+     * Rendering template by content.
+     * @param data Template filled model
+     * @param logTag Template name and log messages name
+     * @param reader Template input stream
+     * @return Render result
+     * @throws Exception Have more different exception
+     */
+    String renderToString(Object data, String logTag, Reader reader) throws Exception;
 
 }

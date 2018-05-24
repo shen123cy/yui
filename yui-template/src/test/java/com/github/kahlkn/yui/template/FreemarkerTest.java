@@ -11,7 +11,6 @@ public class FreemarkerTest {
     private String source = "This is test string \"${str}\", \nTest string is \"${str}\". ";
     private String source1 = "You name is \"${data.name}\", \nAnd you age is \"${data.age}\". ";
     private Map<String, Object> input = new HashMap<String, Object>();
-    private TemplateEngine engine;
 
     @Before
     public void init() {
@@ -21,15 +20,15 @@ public class FreemarkerTest {
         data.put("name", "zhangsan");
         data.put("age", "19");
         input.put("data", data);
-        engine = new TemplateEngine(new FreemarkerAdapter());
+        TemplateUtils.setTemplateEngine(new FreemarkerAdapter());
     }
 
     @Test
     public void test1() throws Exception {
-        System.out.println(engine.renderToString(input, "source", source));
-        System.out.println(engine.renderToString(input, "source1", source1));
+        System.out.println(TemplateUtils.renderToString(input, "source", source));
+        System.out.println(TemplateUtils.renderToString(input, "source1", source1));
         System.out.println();
-        System.out.println(engine.renderToString("testFreemarker.ftl", input));
+        System.out.println(TemplateUtils.renderToString("testFreemarker.ftl", input));
     }
 
 }

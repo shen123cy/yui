@@ -2,7 +2,7 @@ package com.github.kahlkn.yui.email;
 
 import com.github.kahlkn.artoria.exception.UncheckedException;
 import com.github.kahlkn.artoria.io.IOUtils;
-import com.github.kahlkn.artoria.time.DateTime;
+import com.github.kahlkn.artoria.time.DateUtils;
 import com.github.kahlkn.artoria.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -396,7 +396,7 @@ public class Email {
             String bccStr = bcc.size() > 2 ? Email.serializeAddress(bcc.subList(0, 2)) + " ..." : Email.serializeAddress(bcc);
             builder.append("Bcc         : ").append(bccStr).append(ENDL);
         }
-        builder.append("SentDate    : ").append(DateTime.create(sentDate).toString()).append(ENDL);
+        builder.append("SentDate    : ").append(DateUtils.create(sentDate).toString()).append(ENDL);
         builder.append("Priority    : ").append(priority).append(ENDL);
         builder.append("Size        : ").append(size).append(" Byte").append(ENDL);
         builder.append("HasAttach   : ").append(hasAttach).append(ENDL);

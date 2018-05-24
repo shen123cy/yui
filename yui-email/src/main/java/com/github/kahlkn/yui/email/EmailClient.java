@@ -1,10 +1,6 @@
 package com.github.kahlkn.yui.email;
 
-import com.github.kahlkn.artoria.io.FileUtils;
-import com.github.kahlkn.artoria.util.ArrayUtils;
-import com.github.kahlkn.artoria.util.Assert;
-import com.github.kahlkn.artoria.util.PropUtils;
-import com.github.kahlkn.artoria.util.StringUtils;
+import com.github.kahlkn.artoria.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +27,12 @@ public class EmailClient {
     private Session session;
 
     public EmailClient() {
-        File file = FileUtils.findClasspath(EMAIL_CONFIG_NAME);
-        if (!file.exists()) { return; }
+        String path = PathUtils.findClasspath(EMAIL_CONFIG_NAME);
+        File file;
+        if (StringUtils.isBlank(path) ||
+                !(file = new File(path)).exists()) {
+            return;
+        }
         log.info("Find default email config file \"" + EMAIL_CONFIG_NAME + "\" in classpath. ");
         PropUtils prop = PropUtils.create(file);
         this.setConfig(prop.getProperties());

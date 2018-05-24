@@ -3,8 +3,6 @@ package com.github.kahlkn.yui.zookeeper.lock;
 import com.github.kahlkn.artoria.lock.LockException;
 import com.github.kahlkn.artoria.lock.LockFactory;
 import com.github.kahlkn.artoria.util.Assert;
-import com.github.kahlkn.artoria.util.Hook;
-import com.github.kahlkn.artoria.util.HookUtils;
 import com.github.kahlkn.yui.zookeeper.ZkConnectionStateListener;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -31,23 +29,23 @@ public class ZkReentrantLockFactory implements LockFactory {
     public ZkReentrantLockFactory(String connectString) {
         Assert.notBlank(connectString, "Parameter \"connectString\" must not blank. ");
         curator = CuratorFrameworkFactory.builder()
+                .retryPolicy(new ExponentialBackoffRetry(1000, Integer.MAX_VALUE))
                 .sessionTimeoutMs(30000)
                 .connectionTimeoutMs(30000)
-                .retryPolicy(new ExponentialBackoffRetry(1000, Integer.MAX_VALUE))
                 .connectString(connectString)
                 .build();
         ConnectionStateListener listener = new ZkConnectionStateListener("ZK-" + connectString);
         curator.getConnectionStateListenable().addListener(listener);
         curator.start();
         log.info("Initialize ZkReentrantLockFactory success, and zookeeper connect address is \"{}\".", connectString);
-        HookUtils.addShutdownHook(new Hook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
-            public void call() {
+            public void run() {
                 if (curator == null) { return; }
                 curator.close();
-                System.out.println("Release curator object \"" + curator + "\" success in shutdown hook. ");
+                log.info("Release curator object \"{}\" success in shutdown hook. ", curator);
             }
-        });
+        }));
     }
 
     public ZkReentrantLockFactory(CuratorFramework curator) {

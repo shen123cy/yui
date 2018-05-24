@@ -1,7 +1,7 @@
 package com.github.kahlkn.yui.template.support;
 
 import com.github.kahlkn.artoria.util.Assert;
-import com.github.kahlkn.yui.template.EngineAdapter;
+import com.github.kahlkn.yui.template.AbstractEngineAdapter;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
@@ -21,7 +21,7 @@ import static org.apache.velocity.app.Velocity.*;
  * Velocity template engine adapter.
  * @author Kahle
  */
-public class VelocityAdapter implements EngineAdapter {
+public class VelocityAdapter extends AbstractEngineAdapter {
     private static final String FILE_LOADER_CLASS = "file.resource.loader.class";
     private static final String CLASS_LOADER_CLASS = "class.resource.loader.class";
     private static final String JAR_LOADER_CLASS = "jar.resource.loader.class";

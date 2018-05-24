@@ -1,7 +1,7 @@
 package com.github.kahlkn.yui.template.support;
 
 import com.github.kahlkn.artoria.exception.UncheckedException;
-import com.github.kahlkn.yui.template.EngineAdapter;
+import com.github.kahlkn.yui.template.AbstractEngineAdapter;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
@@ -20,7 +20,7 @@ import static com.github.kahlkn.artoria.util.Const.SLASH;
  * Freemarker template engine adapter.
  * @author Kahle
  */
-public class FreemarkerAdapter implements EngineAdapter {
+public class FreemarkerAdapter extends AbstractEngineAdapter {
     private Configuration configuration;
 
     public FreemarkerAdapter() {

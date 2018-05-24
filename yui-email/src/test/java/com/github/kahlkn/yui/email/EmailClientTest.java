@@ -1,6 +1,6 @@
 package com.github.kahlkn.yui.email;
 
-import com.github.kahlkn.artoria.time.DateTime;
+import com.github.kahlkn.artoria.time.DateUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public class EmailClientTest {
         email = new Email()
                 .addFrom(client.getUser(), "Email Test User")
                 .addTo(to)
-                .setSentDate(DateTime.create(1995, 5, 5).getDate())
+                .setSentDate(DateUtils.create(1995, 5, 5).getDate())
                 .setSubject("Email Test")
                 .setHtmlContent("<html><h1>Email Test</h1><br />This is a test email.<br /><img src=\"" +
                         "https://kahlkn.github.io/Luck.jpg\" /><br /><br /></html>")
