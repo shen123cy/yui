@@ -1,0 +1,9 @@
+package ${meta.voPackageName};
+
+import ${meta.mapperInterfacePackageName}.entities.${meta.domainClassName};
+
+public class ${meta.voClassName} extends ${meta.domainClassName} {
+
+	private static final long serialVersionUID = 1L;	
+	
+}

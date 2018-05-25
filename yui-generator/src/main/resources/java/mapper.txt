@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="${meta.mapperInterfacePackageName}.mappers.${meta.mapperInterfaceClassName}">
+	<resultMap type="${meta.mapperInterfacePackageName}.entities.${meta.domainClassName}" id="${meta.domainClassName}DO" extends="${meta.mapperInterfacePackageName}.mappers.immutable.${meta.immapperInterfaceClassName}.${meta.domainClassName}">
+		
+	</resultMap> 
+	
+	<select id="queryRecords" resultType="${meta.mapperInterfacePackageName}.entities.${meta.domainClassName}" parameterType="${meta.mapperInterfacePackageName}.entities.${meta.domainClassName}">
+		select
+		#set($temp=0) 
+		#foreach( ${col} in ${meta.cols} )
+		#if( $temp >0 ) , #end  ${col.colName} as "${col.fieldName}" 
+		#set($temp=$temp+1)
+		#end
+		from ${meta.tableName}
+		where
+			ALIVE_FLAG='1'
+			#foreach( ${col} in ${meta.cols} )<if test="${col.fieldName}!=null and ${col.fieldName}!=''">and  ${col.colName}=#{${col.fieldName}}</if>
+			#end
+	</select>
+	
+	<select id="countRecords" resultType="int" parameterType="${meta.mapperInterfacePackageName}.entities.${meta.domainClassName}">
+		select
+		count(*) from ${meta.tableName} 
+		where
+		 ALIVE_FLAG='1'
+			#foreach( ${col} in ${meta.cols} )<if test="${col.fieldName}!=null and ${col.fieldName}!=''">and  ${col.colName}=#{${col.fieldName}}</if>
+			#end
+		 
+	</select>
+	
+	<update id="deleteRecords" parameterType="${meta.mapperInterfacePackageName}.entities.${meta.domainClassName}">
+		update ${meta.tableName}
+			<set>
+			ALIVE_FLAG='0'
+	 		,UPDATE_USER = #{updateUser}
+			,UPDATE_DATE = SYSDATE()
+			</set> 
+		where
+				ALIVE_FLAG='1'
+				#foreach( ${col} in ${meta.cols} )<if test="${col.fieldName}!=null and ${col.fieldName}!=''">and  ${col.colName}=#{${col.fieldName}}</if>
+				#end 
+	</update>
+	
+	<update id="updateRecords" parameterType="hashmap">
+		update ${meta.tableName}
+		<set>
+#set($temp=0)
+#foreach( ${col} in ${meta.cols} )
+#if($col.isPkFlag())
+        #if( $temp >0 ) , #end ${col.colName}=#{${col.fieldName}}
+#set($temp=$temp+1)
+#end
+#end
+#foreach( ${col} in ${meta.cols} )
+#if(!$col.isPkFlag())
+		<if test="${col.fieldName}!=null">,${col.colName} = #{${col.fieldName}}</if>
+#end
+#end
+		</set>
+		where
+			ALIVE_FLAG='1'
+			#foreach( ${col} in ${meta.cols} )<if test="${col.fieldName}!=null and ${col.fieldName}!=''">and  ${col.colName}=#{${col.fieldName}}</if>
+			#end 
+	</update>
+	
+</mapper>

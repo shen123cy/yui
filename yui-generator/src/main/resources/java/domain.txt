@@ -1,0 +1,36 @@
+package ${meta.mapperInterfacePackageName}.entities;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import ${meta.baseEntity}.AbstractEntity;
+
+public class ${meta.domainClassName} extends AbstractEntity {
+
+	private static final long serialVersionUID = 1L;
+	
+	#foreach( ${col} in ${meta.cols} )
+/**${col.colDesc}*/
+	private ${col.colType} ${col.fieldName};  
+	
+	#end
+	#foreach( ${col} in ${meta.cols} )
+/**${col.colDesc}*/
+	public void ${col.seOperName}(${col.colType} ${col.fieldName}){
+		this.${col.fieldName}=${col.fieldName};
+	}
+	/**${col.colDesc}*/
+	public ${col.colType} ${col.geOperName}(){
+		return this.${col.fieldName};
+	}
+	
+	#end
+	
+	@Override
+	public Map<String, Object> toMap() {
+		Map<String,Object> map = new HashMap<String,Object>();
+		#foreach( ${col} in ${meta.cols} )map.put("${col.fieldName}",this.${col.fieldName});
+	#end
+		return map;
+	}
+}

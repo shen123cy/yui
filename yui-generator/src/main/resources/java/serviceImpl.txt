@@ -1,0 +1,117 @@
+package ${meta.serviceImplPackageName};
+
+import java.util.Map;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.runyi.ryplat.api.commons.SimplePageInfo;
+import ${meta.mapperInterfacePackageName}.entities.${meta.domainClassName};
+import ${meta.mapperInterfacePackageName}.mappers.${meta.mapperInterfaceClassName};
+import ${meta.mapperInterfacePackageName}.mappers.immutable.${meta.immapperInterfaceClassName};
+import ${meta.servicePackageName}.${meta.serviceClassName};
+
+@Service
+public class ${meta.serviceImplClassName} implements ${meta.serviceClassName} {
+	@Autowired
+	private ${meta.mapperInterfaceClassName} _${meta.mapperInterfaceClassName};
+	
+	@Autowired
+	private ${meta.immapperInterfaceClassName} _${meta.immapperInterfaceClassName};
+	
+	public ${meta.mapperInterfaceClassName} getMapper(){
+		return _${meta.mapperInterfaceClassName};
+	} 
+	
+	/**
+	 * 根据对象-查询对象列表
+	 */
+	public List<${meta.domainClassName}> queryByEntitys(${meta.domainClassName} ${meta.domainClassName.toLowerCase()}){
+		return _${meta.immapperInterfaceClassName}.queryByEntitys(${meta.domainClassName.toLowerCase()});
+	}
+	
+	/**
+	 * 根据主键-查询对象
+	 */
+	public ${meta.domainClassName} findByPrimaryKey(#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) , #end${col.colType} ${col.fieldName}#set($temp=$temp+1)#end#end){
+		return _${meta.immapperInterfaceClassName}.findByPrimaryKey(#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) , #end${col.fieldName}#set($temp=$temp+1)#end#end);	
+	}
+	
+	/**
+	 * 根据主键-修改对象
+	 */
+	public void updateRecord(${meta.domainClassName} ${meta.domainClassName.toLowerCase()}) throws Exception {
+		if (#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) && #end ${meta.domainClassName.toLowerCase()}.${col.geOperName}() == null  #set($temp=$temp+1)#end#end) {
+			throw new Exception("#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) , #end${col.fieldName}#set($temp=$temp+1)#end#end 为空，不能修改 ");
+		}
+		_${meta.immapperInterfaceClassName}.updateRecord(${meta.domainClassName.toLowerCase()});
+	}
+	
+	/**
+	 * 根据主键-逻辑删除对象（ AliveFlag修改为0）
+	 */
+	public void deleteRecordByKey(#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) , #end${col.colType} ${col.fieldName}#set($temp=$temp+1)#end#end  , String deleteUser) throws Exception {
+		if (#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) && #end  ${col.fieldName} == null #set($temp=$temp+1)#end#end) {
+			throw new Exception("#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) , #end${col.fieldName}#set($temp=$temp+1)#end#end 为空，不能删除 ");
+		}
+		_${meta.immapperInterfaceClassName}.deleteRecordByKey(#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) , #end${col.fieldName}#set($temp=$temp+1)#end#end , deleteUser);
+	}
+	
+	/**
+	 * 新增
+	 */
+	public void insertRecord(${meta.domainClassName} ${meta.domainClassName.toLowerCase()}){
+		_${meta.immapperInterfaceClassName}.insertRecord(${meta.domainClassName.toLowerCase()});
+	}
+	
+	/*
+	 * 根据主键删除数据 
+	public void deleteRecordByKey(#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) , #end${col.colType} ${col.fieldName}#set($temp=$temp+1)#end#end) throws Exception {
+		if (#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) && #end  ${col.fieldName} == null #set($temp=$temp+1)#end#end) {
+			throw new Exception("#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) , #end${col.fieldName}#set($temp=$temp+1)#end#end 为空，不能删除 ");
+		}
+		_${meta.immapperInterfaceClassName}.deleteRecordByKey(#set($temp=0)#foreach( ${col} in ${meta.cols} )#if($col.isPkFlag())#if( $temp >0 ) , #end${col.fieldName}#set($temp=$temp+1)#end#end);
+	}
+	*/
+	/**
+	 * 根据条件-查询全部
+	 */
+	public List<Map<String, Object>> queryRecords(Map<String, Object> map){
+		return _${meta.mapperInterfaceClassName}.queryRecords(map);
+	}
+	
+	/**
+	 * 根据条件-分页查询
+	 */
+	public Page<Map<String, Object>> queryRecords(Map<String, Object> map, SimplePageInfo pageInfo){
+		PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize(), pageInfo.getCount()); 
+		return (Page<Map<String, Object>>) _${meta.mapperInterfaceClassName}.queryRecords(map);
+	}
+	
+	/**
+	 * 根据条件-查询记录条数
+	 */
+	public int countRecords(Map<String, Object> map){
+		return _${meta.mapperInterfaceClassName}.countRecords(map);
+	}
+	
+	/**
+	 * 根据条件-批量逻辑删除 (AliveFlag修改为0)
+	 */
+	public void deleteRecords(Map<String, Object> map) throws Exception {
+		_${meta.mapperInterfaceClassName}.deleteRecords(map);
+	}
+	
+	/**
+	 * 根据条件-批量修改数据
+	 */
+	public void updateRecords(Map<String, Object> map) throws Exception {
+		_${meta.mapperInterfaceClassName}.updateRecords(map);
+	}
+	
+	//**************************以下方法为开发者补充*********************************/
+	
+}

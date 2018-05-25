@@ -1,0 +1,18 @@
+package ${meta.mapperInterfacePackageName}.mappers;
+
+import java.util.Map;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import ${meta.mapperInterfacePackageName}.entities.${meta.domainClassName};
+
+@Mapper
+public interface ${meta.mapperInterfaceClassName} {
+	public List<${meta.domainClassName}> queryRecords(${meta.domainClassName} record);
+	public int countRecords(${meta.domainClassName} record);
+	public void deleteRecords(${meta.domainClassName} record);
+	public void updateRecords(${meta.domainClassName} record);
+	//**************************以下方法为开发者补充*********************************/
+	
+}

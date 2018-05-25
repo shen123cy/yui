@@ -1,0 +1,18 @@
+package ${meta.controllerPackageName};
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import ${meta.servicePackageName}.${meta.serviceClassName};
+import ${meta.baseController}.BaseController;
+
+
+@Controller
+public class ${meta.controllerClassName} extends BaseController {
+	@Autowired
+	private ${meta.serviceClassName} ${meta.serviceClassName.toLowerCase()};
+	
+	 
+	
+	
+	
+}
